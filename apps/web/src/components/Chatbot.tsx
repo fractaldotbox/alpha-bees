@@ -37,11 +37,11 @@ const Chatbot = () => {
 				<div className="flex items-center">
 					<img
 						src="/assets/alphaBees-logo.png"
-						alt="AlphaBees Logo"
+						alt="αBees Logo"
 						className="w-10 h-10 mr-2 filter brightness-110"
 					/>
 					<h1 className="font-bold text-2xl text-yellow-200">
-						alphaBees Trading Chat <span className="ml-1">🤖🐝</span>
+						αBees <span className="ml-1">🤖🐝</span>
 					</h1>
 				</div>
 				<nav className="space-x-4">
@@ -75,13 +75,6 @@ const Chatbot = () => {
 								key={index}
 								className={`flex ${msg.sender === "agent" ? "flex-row" : "flex-row-reverse"}`}
 							>
-								{msg.sender === "agent" && (
-									<img
-										src="/assets/agent_avatar.png"
-										alt="Agent Avatar"
-										className="w-10 h-10 rounded-full mr-2 border border-yellow-500"
-									/>
-								)}
 								<div
 									className={`p-3 rounded-lg max-w-xs break-words shadow-md ${
 										msg.sender === "agent"

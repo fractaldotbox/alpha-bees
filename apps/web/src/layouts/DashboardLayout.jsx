@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
+import ChatAvatarWidget from "../components/ChatAvatarWidget";
 import ChatWidget from "../components/ChatWidget";
 import MarketChart from "../components/MarketChart";
 import Navbar from "../components/Navbar.jsx";
@@ -12,9 +13,10 @@ const DashboardLayout = () => {
 
 	// Default layout for grid items when not expanded.
 	const defaultLayout = [
-		{ i: "chat", x: 0, y: 0, w: 6, h: 12, minW: 4, minH: 8 },
-		{ i: "marketChart", x: 6, y: 0, w: 6, h: 8, minW: 4, minH: 6 },
-		{ i: "portfolio", x: 6, y: 8, w: 6, h: 8, minW: 4, minH: 6 },
+		{ i: "chatAvatar", x: 0, y: 0, w: 3, h: 12, minW: 3, minH: 6 },
+		{ i: "chat", x: 3, y: 0, w: 4, h: 12, minW: 4, minH: 8 },
+		{ i: "marketChart", x: 7, y: 0, w: 3, h: 8, minW: 3, minH: 6 },
+		{ i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
 	];
 
 	// SVG icons for expand and collapse actions.
@@ -80,6 +82,9 @@ const DashboardLayout = () => {
 		if (expandedWidget === "chat") {
 			widgetContent = <ChatWidget />;
 			widgetTitle = "Chat";
+		} else if (expandedWidget === "chatAvatar") {
+			widgetContent = <ChatAvatarWidget />;
+			widgetTitle = "Queen";
 		} else if (expandedWidget === "marketChart") {
 			widgetContent = <MarketChart />;
 			widgetTitle = "Market Chart";
@@ -110,6 +115,9 @@ const DashboardLayout = () => {
 					draggableHandle=".widget-header"
 					draggableCancel=".no-drag"
 				>
+					<div key="chatAvatar" className="p-2">
+						{renderWidget("chatAvatar", "Queen", <ChatAvatarWidget />)}
+					</div>
 					<div key="chat" className="p-2">
 						{renderWidget("chat", "Chat", <ChatWidget />)}
 					</div>

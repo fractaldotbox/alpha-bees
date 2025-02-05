@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import AgentAvatar from "./AgentAvatar";
+import ChatBubble from "./ChatBubble";
 
 const ChatWidget = () => {
 	const [messages, setMessages] = useState([
@@ -18,7 +20,7 @@ const ChatWidget = () => {
 		const userMessage = { sender: "user", text: input };
 		setMessages((prev) => [...prev, userMessage]);
 
-		// Set loading and call the API.
+		// Call the API endpoint.
 		setLoading(true);
 		try {
 			const response = await fetch("/api/chat", {
@@ -44,34 +46,26 @@ const ChatWidget = () => {
 	};
 
 	return (
-		<div className="flex flex-col h-full">
-			<div className="flex-1 overflow-y-auto space-y-4">
+		<div className="grid grid-rows-[1fr,auto] h-full">
+			{/* Messages Container */}
+			<div className="overflow-y-auto p-4 space-y-4">
 				{messages.map((msg, index) => (
 					<div
 						key={index}
-						className={`flex ${msg.sender === "agent" ? "justify-start" : "justify-end"}`}
+						className={`grid items-start gap-4 ${
+							msg.sender === "agent"
+								? "grid-cols-[max-content,1fr]"
+								: "grid-cols-[1fr,max-content]"
+						}`}
 					>
-						{msg.sender === "agent" && (
-							<img
-								src="/assets/agent_avatar.png"
-								alt="Agent Avatar"
-								className="w-8 h-8 rounded-full mr-2 border border-yellow-500"
-							/>
-						)}
-						<div
-							className={`p-3 rounded-lg max-w-xs break-words shadow-md ${
-								msg.sender === "agent"
-									? "bg-yellow-300 border border-yellow-400 text-gray-800"
-									: "bg-yellow-700 border border-yellow-600 text-white"
-							}`}
-						>
-							{msg.text}
-						</div>
+						<ChatBubble message={msg.text} sender={msg.sender} />
 					</div>
 				))}
 				{loading && <div className="text-yellow-300">Fetching response...</div>}
 			</div>
-			<form onSubmit={handleSubmit} className="flex mt-2">
+
+			{/* Input Form */}
+			<form onSubmit={handleSubmit} className="flex p-4">
 				<input
 					type="text"
 					value={input}
