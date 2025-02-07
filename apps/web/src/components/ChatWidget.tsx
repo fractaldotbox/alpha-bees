@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import AgentAvatar from "./AgentAvatar";
+import { useStore } from "@nanostores/react";
+import { $messages, setMessages, type Message } from "../store/messages";
 import ChatBubble from "./ChatBubble";
 
 const ChatWidget = () => {
-  const [messages, setMessages] = useState([
-    {
-      sender: "agent",
-      text: "Hello, I am your AlphaBees Trading Agent. How can I assist you today?",
-    },
-  ]);
+  const messages = useStore($messages);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
 
     // Append the user's message to the conversation.
-    const userMessage = { sender: "user", text: input };
-    setMessages((prev) => [...prev, userMessage]);
+    const userMessage: Message = { sender: "user", text: input };
+    setMessages([...messages, userMessage]);
 
     // Call the API endpoint.
     setLoading(true);
@@ -31,15 +29,20 @@ const ChatWidget = () => {
       const data = await response.json();
 
       console.log(data);
-      // Append the API's response as the agent's message.
-      setMessages((prev) => [
-        ...prev,
-        { sender: "agent", text: data.response.text || "No response from API" },
+
+      setMessages([
+        ...messages,
+        userMessage,
+        {
+          sender: "agent",
+          text: data.response.text || "No response from API",
+          graphData: data.response.graph,
+        },
       ]);
     } catch (error) {
       console.error(error);
-      setMessages((prev) => [
-        ...prev,
+      setMessages([
+        ...messages,
         { sender: "agent", text: "Error retrieving response." },
       ]);
     }

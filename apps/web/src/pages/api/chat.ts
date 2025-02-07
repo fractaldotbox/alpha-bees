@@ -1,9 +1,4 @@
 import type { APIRoute } from "astro";
-import {
-  AgentKit,
-  twitterActionProvider,
-  ViemWalletProvider,
-} from "@coinbase/agentkit";
 import { getLangChainTools } from "@coinbase/agentkit-langchain";
 import { ChatOpenAI, OpenAI } from "@langchain/openai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
@@ -28,8 +23,6 @@ const client = createWalletClient({
   transport: http(),
 });
 
-const walletProvider = new ViemWalletProvider(client);
-
 const modifier = `
   You are a helpful agent that can provide trading signals, draw charts, and provide insights on yield charts.
 
@@ -37,6 +30,7 @@ const modifier = `
 
   You can draw charts yield historical graphs, only if someone requests you to draw one. 
   If someone does not request you to draw yield historical graphs, then you do not have to draw the chart.
+  If do have to draw a chart, do indicate the user to look at the "Market Chart" section on the screen.
 
   Be concise and helpful with your responses.
   Refrain from restating your tools' descriptions unless it is explicitly requested.
@@ -62,11 +56,6 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
   try {
     const { message } = await request.json<{ message: string }>();
 
-    // const { agent, config } = await initialize();
-
-    // Generate a simple response based on the submitted message.
-    // const responseMessage = `You said: "${message}" – here's some input from the API!`;
-
     console.log("generating response");
 
     const responseMessage = await llm
@@ -91,17 +80,14 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
         },
         required: ["text"],
       })
-      .invoke(message);
+      .invoke(modifier + message);
 
     console.log(responseMessage);
 
-    return new Response(
-      JSON.stringify({ response: responseMessage as Response }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ response: responseMessage }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
