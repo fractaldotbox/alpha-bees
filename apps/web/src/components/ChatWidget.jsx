@@ -34,7 +34,7 @@ const ChatWidget = () => {
       // Append the API's response as the agent's message.
       setMessages((prev) => [
         ...prev,
-        { sender: "agent", text: data.response || "No response from API" },
+        { sender: "agent", text: data.response.text || "No response from API" },
       ]);
     } catch (error) {
       console.error(error);
