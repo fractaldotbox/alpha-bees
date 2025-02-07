@@ -35,8 +35,8 @@ const ChatWidget = () => {
         userMessage,
         {
           sender: "agent",
-          text: data.response.text || "No response from API",
-          graphData: data.response.graph,
+          text: data.text || "No response from API",
+          graphData: data.graph,
         },
       ]);
     } catch (error) {

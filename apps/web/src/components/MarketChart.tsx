@@ -15,7 +15,7 @@ const MarketChart = () => {
       {messages
         .filter((message) => !!message.graphData)
         .map((message) => (
-          <YieldHistoricalChart poolId={message.graphData!.poolId} />
+          <YieldHistoricalChart poolIds={message.graphData.poolIds} />
         ))}
     </div>
   );

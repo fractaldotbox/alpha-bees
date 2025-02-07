@@ -1,5 +1,4 @@
-import React from "react";
-
+import Markdown from "react-markdown";
 const ChatBubble = ({
   message,
   sender,
@@ -15,7 +14,7 @@ const ChatBubble = ({
           : "bg-yellow-700 border border-yellow-600 text-white"
       }`}
     >
-      {message}
+      <Markdown>{message}</Markdown>
     </div>
   );
 };

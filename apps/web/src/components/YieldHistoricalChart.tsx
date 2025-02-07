@@ -10,7 +10,7 @@ import { Skeleton } from "./ui/skeleton";
 
 type YieldHistoricalChartProps = {
   // this will be defillama pool id
-  poolId: string;
+  poolIds: string[];
   title?: string;
   color?: string;
 };
@@ -41,18 +41,21 @@ async function getYieldHistoricalChartData(
 }
 
 export function YieldHistoricalChart({
-  poolId,
+  poolIds,
   title,
   color,
 }: YieldHistoricalChartProps) {
-  const [data, setData] = useState<DefiLlamaYieldDataPoint[] | null>(null);
+  const [data, setData] = useState<DefiLlamaYieldDataPoint[][] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const result = await getYieldHistoricalChartData(poolId);
-        setData(result);
+        const promises = poolIds.map((id: string) =>
+          getYieldHistoricalChartData(id),
+        );
+        const results = await Promise.all(promises);
+        setData(results);
       } catch (error) {
         console.error("Failed to fetch yield data:", error);
       } finally {
@@ -61,7 +64,7 @@ export function YieldHistoricalChart({
     }
 
     void fetchData();
-  }, [poolId]);
+  }, [poolIds]);
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString();
@@ -70,12 +73,23 @@ export function YieldHistoricalChart({
   const formattedYieldData = useMemo(() => {
     if (!data) return [];
 
-    return data
-      .map((dataPoint) => ({
+    // Map each pool's data series
+    return data.map((poolData, index) => {
+      // Convert each data point for this pool
+      const points = poolData.map((dataPoint) => ({
         date: new Date(dataPoint.timestamp).getTime(),
         apy: dataPoint.apy,
-      }))
-      .sort((a, b) => a.date - b.date);
+      }));
+
+      // Sort by date
+      points.sort((a, b) => a.date - b.date);
+
+      // Return series with unique key
+      return {
+        key: `pool-${index}`,
+        data: points,
+      };
+    });
   }, [data]);
 
   if (isLoading) return <Skeleton className="h-[100px] w-[260px]" />;
@@ -114,13 +128,18 @@ export function YieldHistoricalChart({
               />
             }
           />
-          <Line
-            type="monotone"
-            dataKey="apy"
-            strokeWidth={2}
-            stroke={color ?? "#2563eb"}
-            dot={false}
-          />
+          {formattedYieldData.map((series) => (
+            <Line
+              data={series.data}
+              type="monotone"
+              dataKey="apy"
+              strokeWidth={2}
+              stroke={
+                color ?? `#${Math.floor(Math.random() * 16777215).toString(16)}`
+              }
+              dot={false}
+            />
+          ))}
         </LineChart>
       </ChartContainer>
     </div>

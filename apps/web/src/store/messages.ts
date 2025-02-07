@@ -5,8 +5,8 @@ export type Message = {
   text: string;
   graphData?: {
     graphType: "yieldHistoricalGraph";
-    poolId: string;
-  };
+    poolIds: string[];
+  }[];
 };
 
 // Create atom to store messages
