@@ -9,9 +9,9 @@ import {
   pythActionProvider,
   morphoActionProvider,
   EvmWalletProvider,
+  ActionProvider,
 } from "@coinbase/agentkit";
 import { aaveActionProvider, findAaveMarketAssets } from "./agentkit/action-providers/aave/aaveActionProvider";
-// import { AAVEV3_SEPOLIA, AAVEV3_BASE_SEPOLIA, AAVEV3_BASE_SEPOLIA } from "../../agentkit/src/action-providers/aave/markets";
 import { getLangChainTools } from "@coinbase/agentkit-langchain";
 import { HumanMessage } from "@langchain/core/messages";
 import { MemorySaver } from "@langchain/langgraph";
@@ -74,6 +74,9 @@ validateEnvironment();
  */
 export async function initializeAgent() {
   try {
+    const agentName = process.env.AGENT_NAME || "Worker Bee";
+    console.log(`Initializing agent: ${agentName}`);
+
     // Initialize LLM
     const llm = new ChatOpenAI({
       model: "gpt-4o-mini",
@@ -92,6 +95,10 @@ export async function initializeAgent() {
       networkId: process.env.NETWORK_ID || "base-sepolia",
     };
 
+    const MORPHO_ACTION_ON = process.env.MORPHO_ACTION_ON || true;
+    const AAVE_ACTION_ON = process.env.AAVE_ACTION_ON || false;
+
+
     const aaveAction = aaveActionProvider();
 
     const walletProvider = await CdpWalletProvider.configureWithWallet(config);
@@ -99,33 +106,36 @@ export async function initializeAgent() {
     // @ts-ignore
     await aaveAction.approveAll(walletProvider);
 
+    const actionProviders = [
+      wethActionProvider(),
+      pythActionProvider(),
+      walletActionProvider(),
+      erc20ActionProvider(),
+      AAVE_ACTION_ON && aaveAction,
+      MORPHO_ACTION_ON && morphoActionProvider(),
+      // cdpApiActionProvider({
+      //   apiKeyName: process.env.CDP_API_KEY_NAME,
+      //   apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      // }),
+
+      // cdpWalletActionProvider({
+      //   apiKeyName: process.env.CDP_API_KEY_NAME,
+      //   apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      // }),
+    ].filter(Boolean) as ActionProvider[];
+
     // Initialize AgentKit
     const agentkit = await AgentKit.from({
       walletProvider,
-      actionProviders: [
-        wethActionProvider(),
-        pythActionProvider(),
-        walletActionProvider(),
-        erc20ActionProvider(),
-        // @ts-ignore outdated types
-        aaveAction,
-        // cdpApiActionProvider({
-        //   apiKeyName: process.env.CDP_API_KEY_NAME,
-        //   apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-        // }),
-        // morphoActionProvider(),
-        // cdpWalletActionProvider({
-        //   apiKeyName: process.env.CDP_API_KEY_NAME,
-        //   apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-        // }),
-      ],
+      actionProviders,
     });
 
     const tools = await getLangChainTools(agentkit);
 
     // Store buffered conversation history in memory
     const memory = new MemorySaver();
-    const agentConfig = { configurable: { thread_id: "CDP AgentKit Chatbot Example!" } };
+    const agentConfig = { configurable: { thread_id: "Worker Bee" } };
+
 
     // Create React Agent using the LLM and CDP AgentKit tools
     const agent = createReactAgent({
@@ -165,10 +175,22 @@ export async function runAutonomousMode(agent: any, config: any, walletProvider:
 
   // TODO load policy from ipfs 
 
-  const swarmAddresses = [
-    walletProvider.getAddress(),
-    '0x4A9b1ECD1297493B4EfF34652710BD1cE52c6526'
-  ] as `0x${string}`[];
+  const swarmAddresses = [...new Set(
+    [
+      walletProvider.getAddress(),
+
+      // sepolia ETH agent
+      '0x4A9b1ECD1297493B4EfF34652710BD1cE52c6526',
+
+      // base-sepolia Aave USDC agent
+      '0x94D8C42AFE90C15b7Dd55902f25ed6253fD47F8c',
+
+      // base-sepolia Morpho USDC agent
+      '0x6B608C852850234d42e0C87db86C491A972E3E01'
+    ]
+  )] as `0x${string}`[];
+
+
   // eslint-disable-next-line no-constant-condition
   const swarmPortfolioService = new SwarmPortfolioService(
     swarmAddresses,
