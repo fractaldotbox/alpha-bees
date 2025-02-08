@@ -9,14 +9,22 @@ const MarketChart = () => {
   console.log({ messages });
 
   return (
-    <div className="w-full h-48 bg-white rounded-lg shadow flex items-center justify-center">
+    <div className="w-full bg-white rounded-lg shadow flex items-center justify-center">
       {/* Placeholder for a live market chart */}
-      {/* <span className="text-gray-500">Market Chart Coming Soon</span> */}
-      {messages
-        .filter((message) => !!message.graphData)
-        .map((message) => (
-          <YieldHistoricalChart poolIds={message.graphData.poolIds} />
-        ))}
+      {messages.length === 0 && (
+        <span className="text-gray-500">
+          Market Chart will be drawn here after you ask a question
+        </span>
+      )}
+      {messages.length > 0 &&
+        messages
+          .filter((message) => !!message.graphData)
+          .map((message, index) => (
+            <YieldHistoricalChart
+              key={index}
+              poolIds={message.graphData?.poolIds ?? []}
+            />
+          ))}
     </div>
   );
 };

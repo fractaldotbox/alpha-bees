@@ -92,7 +92,7 @@ export function YieldHistoricalChart({
     });
   }, [data]);
 
-  if (isLoading) return <Skeleton className="h-[100px] w-[260px]" />;
+  if (isLoading) return <Skeleton className="h-[200px] w-full" />;
 
   return (
     <div className="flex flex-col gap-2 items-center">
@@ -100,7 +100,7 @@ export function YieldHistoricalChart({
       <ChartContainer
         config={chartConfig}
         // cannot use tailwind here
-        style={{ height: "100px", width: "260px" }}
+        style={{ height: "200px", width: "100%" }}
       >
         <LineChart data={formattedYieldData}>
           <CartesianGrid strokeDasharray="3 3" horizontal vertical={false} />
