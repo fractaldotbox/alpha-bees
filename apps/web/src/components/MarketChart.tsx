@@ -6,25 +6,25 @@ import { YieldHistoricalChart } from "./YieldHistoricalChart";
 const MarketChart = () => {
   const messages = useStore($messages);
 
-  console.log({ messages });
+  const messagesWithGraphData = messages.filter(
+    (message) => !!message.graphData,
+  );
 
   return (
-    <div className="w-full bg-white rounded-lg shadow flex items-center justify-center">
+    <div className="w-full min-h-[200px] bg-white rounded-lg shadow flex items-center justify-center">
       {/* Placeholder for a live market chart */}
-      {messages.length === 0 && (
-        <span className="text-gray-500">
+      {messagesWithGraphData.length === 0 && (
+        <div className="text-black px-4">
           Market Chart will be drawn here after you ask a question
-        </span>
+        </div>
       )}
-      {messages.length > 0 &&
-        messages
-          .filter((message) => !!message.graphData)
-          .map((message, index) => (
-            <YieldHistoricalChart
-              key={index}
-              poolIds={message.graphData?.poolIds ?? []}
-            />
-          ))}
+      {messagesWithGraphData.length > 0 &&
+        messagesWithGraphData.map((message, index) => (
+          <YieldHistoricalChart
+            key={index}
+            poolIds={message.graphData?.poolIds ?? []}
+          />
+        ))}
     </div>
   );
 };
