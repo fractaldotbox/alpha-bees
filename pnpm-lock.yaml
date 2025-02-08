@@ -139,7 +139,7 @@ importers:
     dependencies:
       '@aave/contract-helpers':
         specifier: ^1.31.1
-        version: 1.31.1(bignumber.js@9.1.2)(ethers@5.7.2)(reflect-metadata@0.2.2)(tslib@2.8.1)
+        version: 1.31.1(bignumber.js@9.1.2)(ethers@5.7.2)(reflect-metadata@0.1.14)(tslib@2.8.1)
       '@aave/math-utils':
         specifier: ^1.31.1
         version: 1.31.1(bignumber.js@9.1.2)(tslib@2.8.1)
@@ -179,9 +179,6 @@ importers:
       pino:
         specifier: ^9.6.0
         version: 9.6.0
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -257,7 +254,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /@aave/contract-helpers@1.31.1(bignumber.js@9.1.2)(ethers@5.7.2)(reflect-metadata@0.2.2)(tslib@2.8.1):
+  /@aave/contract-helpers@1.31.1(bignumber.js@9.1.2)(ethers@5.7.2)(reflect-metadata@0.1.14)(tslib@2.8.1):
     resolution: {integrity: sha512-68/RIxOSZXpAJ0CbzN25tPDGF0QUoVbJQ6c7UDtA1hT2aL5g06URqHKhdIg1+Jvnz4VU8Qu0YYC26F5K+lVUcQ==}
     peerDependencies:
       bignumber.js: ^9.x
@@ -268,7 +265,7 @@ packages:
       bignumber.js: 9.1.2
       ethers: 5.7.2
       isomorphic-unfetch: 3.1.0
-      reflect-metadata: 0.2.2
+      reflect-metadata: 0.1.14
       tslib: 2.8.1
     transitivePeerDependencies:
       - encoding
@@ -8143,6 +8140,10 @@ packages:
       indent-string: 4.0.0
       strip-indent: 3.0.0
     dev: true
+
+  /reflect-metadata@0.1.14:
+    resolution: {integrity: sha512-ZhYeb6nRaXCfhnndflDK8qI6ZQ/YcWZCISRAWICW9XYqMUwjZM9Z0DveWX/ABN01oxSHwVxKQmxeYZSsm0jh5A==}
+    dev: false
 
   /reflect-metadata@0.2.2:
     resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}

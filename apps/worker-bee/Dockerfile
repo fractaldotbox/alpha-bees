@@ -9,10 +9,11 @@ COPY --chown=node:node package*.json ./
 
 USER node
 
-RUN npm install
-
 
 COPY --chown=node:node . .
+
+RUN npm install
+
 
 
 EXPOSE 8080
