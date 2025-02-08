@@ -1,18 +1,18 @@
 export type YieldHistoricalGraphActionData = {
-  poolId: string;
+	poolId: string;
 };
 
 export type AgentAction = {
-  action: "drawYieldHistoricalGraph";
-  data: YieldHistoricalGraphActionData;
+	action: "drawYieldHistoricalGraph";
+	data: YieldHistoricalGraphActionData;
 };
 
 export type ChatParagraph = {
-  text: string;
-  actions: AgentAction[];
+	text: string;
+	actions: AgentAction[];
 };
 
 export type ChatMessage = {
-  paragraphs: ChatParagraph[];
-  sender: string; // agent name
+	paragraphs: ChatParagraph[];
+	sender: string; // agent name
 };

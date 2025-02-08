@@ -14,9 +14,9 @@ const DashboardLayout = () => {
 	// Default layout for grid items when not expanded.
 	const defaultLayout = [
 		{ i: "chatAvatar", x: 0, y: 0, w: 3, h: 12, minW: 3, minH: 6 },
-		{ i: "chat", x: 3, y: 0, w: 4, h: 12, minW: 4, minH: 8 },
-		{ i: "marketChart", x: 7, y: 0, w: 3, h: 8, minW: 3, minH: 6 },
-		{ i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
+		{ i: "chat", x: 3, y: 0, w: 4, h: 18, minW: 6, minH: 8 },
+		{ i: "marketChart", x: 7, y: 0, w: 5, h: 10, minW: 3, minH: 6 },
+		// { i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
 	];
 
 	// SVG icons for expand and collapse actions.
@@ -124,9 +124,9 @@ const DashboardLayout = () => {
 					<div key="marketChart" className="p-2">
 						{renderWidget("marketChart", "Market Chart", <MarketChart />)}
 					</div>
-					<div key="portfolio" className="p-2">
+					{/* <div key="portfolio" className="p-2">
 						{renderWidget("portfolio", "Portfolio", <Portfolio />)}
-					</div>
+					</div> */}
 				</ResponsiveGridLayout>
 			</div>
 		</div>

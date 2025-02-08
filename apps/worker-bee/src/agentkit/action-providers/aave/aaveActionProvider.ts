@@ -1,84 +1,104 @@
-import { z } from "zod";
+import type { z } from "zod";
 
-import type { providers } from "ethers-v5";
-import { CreateAction, ActionProvider, Network, EvmWalletProvider, WalletProvider } from "@coinbase/agentkit";
-import { SupplySchema, WithdrawSchema } from "./schemas";
 import {
-  AAVEV3_BASE_SEPOLIA,
-  AAVEV3_SEPOLIA,
-  MarketConfig,
-} from "./markets";
-import { AaveAsset, createSupplyTxData, createWithdrawTxData } from "./aaveActionUtil";
-import { Address, createPublicClient, Hex, http, parseUnits } from "viem";
-import { approve } from "../../utils";
+	ActionProvider,
+	CreateAction,
+	type EvmWalletProvider,
+	type Network,
+	type WalletProvider,
+} from "@coinbase/agentkit";
+import type { providers } from "ethers-v5";
+import {
+	http,
+	type Address,
+	type Hex,
+	createPublicClient,
+	parseUnits,
+} from "viem";
 import { baseSepolia, sepolia } from "viem/chains";
+import { approve } from "../../utils";
+import {
+	type AaveAsset,
+	createSupplyTxData,
+	createWithdrawTxData,
+} from "./aaveActionUtil";
 import { clientToProvider, createProvider } from "./ethers-v5-adapter";
-
+import {
+	AAVEV3_BASE_SEPOLIA,
+	AAVEV3_SEPOLIA,
+	type MarketConfig,
+} from "./markets";
+import { SupplySchema, WithdrawSchema } from "./schemas";
 
 export const SUPPORTED_NETWORKS = ["sepolia", "base-sepolia"];
 
 // Not as action args for better agent guardrails
 
 export const findAaveMarketAssets = (
-  networkId: string,
+	networkId: string,
 ): {
-  market: MarketConfig;
-  assets: Record<string, AaveAsset>;
+	market: MarketConfig;
+	assets: Record<string, AaveAsset>;
 } => {
-  const config = {
-    "base-sepolia": AAVEV3_BASE_SEPOLIA,
-    sepolia: AAVEV3_SEPOLIA,
-  }[networkId];
+	const config = {
+		"base-sepolia": AAVEV3_BASE_SEPOLIA,
+		sepolia: AAVEV3_SEPOLIA,
+	}[networkId];
 
-  if (!config) {
-    throw new Error(`MarketAssets not found for network ${networkId}`);
-  }
-  return config;
+	if (!config) {
+		throw new Error(`MarketAssets not found for network ${networkId}`);
+	}
+	return config;
 };
 
 /**
  * AaveActionProvider is an action provider for supply and withdraw at Aave Protocol.
  */
 export class AaveActionProvider extends ActionProvider<WalletProvider> {
-  #ethersProvider?: providers.Provider;
+	#ethersProvider?: providers.Provider;
 
-  /**
-   * Constructor for the AaveActionProvider.
-   */
-  constructor() {
-    super("aave", []);
-  }
+	/**
+	 * Constructor for the AaveActionProvider.
+	 */
+	constructor() {
+		super("aave", []);
+	}
 
-  private getEthersProvider(walletProvider: EvmWalletProvider) {
-    if (this.#ethersProvider) {
-      return this.#ethersProvider;
-    }
-    const networkId = walletProvider.getNetwork().networkId || "base-sepolia";
+	private getEthersProvider(walletProvider: EvmWalletProvider) {
+		if (this.#ethersProvider) {
+			return this.#ethersProvider;
+		}
+		const networkId = walletProvider.getNetwork().networkId || "base-sepolia";
 
-    this.#ethersProvider = createProvider(networkId);
-    return this.#ethersProvider;
-  }
+		this.#ethersProvider = createProvider(networkId);
+		return this.#ethersProvider;
+	}
 
-  async approveAll(walletProvider: EvmWalletProvider) {
-    const networkId = walletProvider.getNetwork().networkId || "base-sepolia";
-    const { market, assets } = findAaveMarketAssets(networkId);
-    console.log("approve all assets on ", networkId);
-    for await (const asset of Object.values(assets)) {
-      console.log("approve", asset.UNDERLYING, "pool", market.POOL);
-      const results = await approve(walletProvider, asset.UNDERLYING, market.POOL, 1000000000n);
-    }
-  }
+	async approveAll(walletProvider: EvmWalletProvider) {
+		const networkId = walletProvider.getNetwork().networkId || "base-sepolia";
+		const { market, assets } = findAaveMarketAssets(networkId);
+		console.log("approve all assets on ", networkId);
+		for await (const asset of Object.values(assets)) {
+			console.log("approve", asset.UNDERLYING, "pool", market.POOL);
+			const results = await approve(
+				walletProvider,
+				asset.UNDERLYING,
+				market.POOL,
+				1000000000n,
+			);
+		}
+	}
 
-  /**
-   * Supply assets into a Aave v3 protocol
-   *
-   * @param wallet - The wallet instance to execute the transaction
-   * @param args - The input arguments for the action
-   * @returns A success message with transaction details or an error message
-   */
-  @CreateAction({
-    name: "supply",
-    description: `
+	/**
+	 * Supply assets into a Aave v3 protocol
+	 *
+	 * @param wallet - The wallet instance to execute the transaction
+	 * @param args - The input arguments for the action
+	 * @returns A success message with transaction details or an error message
+	 */
+	@CreateAction({
+		name: "supply",
+		description: `
 * This tool allows supplying assets into a Aave v3 protocol market such as USDC
 
 It takes:
@@ -88,58 +108,58 @@ Important notes:
 - Make sure to use the exact amount provided. Do not convert units for assets for this action.
 - Please use a token address (example 0x4200000000000000000000000000000000000006) for the assetAddress field.
 `,
-    schema: SupplySchema,
-  })
-  async supply(
-    walletProvider: EvmWalletProvider,
-    args: z.infer<typeof SupplySchema>,
-  ): Promise<string> {
-    try {
-      if (BigInt(args.amount) <= 0) {
-        return "Error: Assets amount must be greater than 0";
-      }
+		schema: SupplySchema,
+	})
+	async supply(
+		walletProvider: EvmWalletProvider,
+		args: z.infer<typeof SupplySchema>,
+	): Promise<string> {
+		try {
+			if (BigInt(args.amount) <= 0) {
+				return "Error: Assets amount must be greater than 0";
+			}
 
-      const networkId = walletProvider.getNetwork().networkId || "base-sepolia";
-      const { market, assets } = findAaveMarketAssets(networkId);
-      const asset = assets?.[args.assetAddress] as AaveAsset;
+			const networkId = walletProvider.getNetwork().networkId || "base-sepolia";
+			const { market, assets } = findAaveMarketAssets(networkId);
+			const asset = assets?.[args.assetAddress] as AaveAsset;
 
-      console.log("aave supply", args, parseUnits(args.amount, 0), networkId);
+			console.log("aave supply", args, parseUnits(args.amount, 0), networkId);
 
-      const poolAddress = market.POOL;
+			const poolAddress = market.POOL;
 
-      const user = (await walletProvider.getAddress()) as Address;
+			const user = (await walletProvider.getAddress()) as Address;
 
-      const { poolBundle, txData, encodedTxData } = await createSupplyTxData(
-        this.getEthersProvider(walletProvider)!,
-        {
-          market,
-          amount: parseUnits(args.amount, 0),
-          user,
-          asset,
-        },
-      );
+			const { poolBundle, txData, encodedTxData } = await createSupplyTxData(
+				this.getEthersProvider(walletProvider)!,
+				{
+					market,
+					amount: parseUnits(args.amount, 0),
+					user,
+					asset,
+				},
+			);
 
-      console.log("create supply tx data");
+			console.log("create supply tx data");
 
-      console.log(txData, encodedTxData);
+			console.log(txData, encodedTxData);
 
-      const txHash = await walletProvider.sendTransaction({
-        to: poolAddress as Address,
-        data: txData.data as Hex,
-      });
+			const txHash = await walletProvider.sendTransaction({
+				to: poolAddress as Address,
+				data: txData.data as Hex,
+			});
 
-      const receipt = await walletProvider.waitForTransactionReceipt(txHash);
+			const receipt = await walletProvider.waitForTransactionReceipt(txHash);
 
-      return `Supplied ${args.amount} units of ${args.assetAddress} to Aave v3 Pool ${poolAddress} with transaction hash: ${txHash} status:${receipt.status}`;
-    } catch (error) {
-      console.error(error);
-      return `Error supplying to Aave v3: ${error}`;
-    }
-  }
+			return `Supplied ${args.amount} units of ${args.assetAddress} to Aave v3 Pool ${poolAddress} with transaction hash: ${txHash} status:${receipt.status}`;
+		} catch (error) {
+			console.error(error);
+			return `Error supplying to Aave v3: ${error}`;
+		}
+	}
 
-  @CreateAction({
-    name: "withdraw",
-    description: `
+	@CreateAction({
+		name: "withdraw",
+		description: `
 * This tool allows supplying assets into a Aave v3 protocol market such as USDC
 
 It takes:
@@ -150,49 +170,51 @@ Important notes:
 - Please use a token address (example 0x4200000000000000000000000000000000000006) for the assetAddress field.
 
 `,
-    schema: WithdrawSchema,
-  })
-  async withdraw(
-    walletProvider: EvmWalletProvider,
-    args: z.infer<typeof WithdrawSchema>,
-  ): Promise<string> {
-    if (BigInt(args.assetAddress) <= 0) {
-      return "Error: Assets amount must be greater than 0";
-    }
+		schema: WithdrawSchema,
+	})
+	async withdraw(
+		walletProvider: EvmWalletProvider,
+		args: z.infer<typeof WithdrawSchema>,
+	): Promise<string> {
+		if (BigInt(args.assetAddress) <= 0) {
+			return "Error: Assets amount must be greater than 0";
+		}
 
-    try {
-      const networkId = walletProvider.getNetwork().networkId || "base-sepolia";
-      const { market, assets } = findAaveMarketAssets(networkId);
+		try {
+			const networkId = walletProvider.getNetwork().networkId || "base-sepolia";
+			const { market, assets } = findAaveMarketAssets(networkId);
 
-      const provider = this.getEthersProvider(walletProvider)!;
-      const user = (await walletProvider.getAddress()) as Address;
-      const { withDrawTxDatas } = await createWithdrawTxData(provider, {
-        market,
-        amount: 1n,
-        user,
-        asset: assets[args.assetAddress],
-      });
+			const provider = this.getEthersProvider(walletProvider)!;
+			const user = (await walletProvider.getAddress()) as Address;
+			const { withDrawTxDatas } = await createWithdrawTxData(provider, {
+				market,
+				amount: 1n,
+				user,
+				asset: assets[args.assetAddress],
+			});
 
-      const withdrawTxHash = await walletProvider.sendTransaction({
-        to: withDrawTxDatas?.[0].to as Address,
-        data: withDrawTxDatas?.[0].data as Hex,
-      });
+			const withdrawTxHash = await walletProvider.sendTransaction({
+				to: withDrawTxDatas?.[0].to as Address,
+				data: withDrawTxDatas?.[0].data as Hex,
+			});
 
-      const receipt = await walletProvider.waitForTransactionReceipt(withdrawTxHash);
+			const receipt =
+				await walletProvider.waitForTransactionReceipt(withdrawTxHash);
 
-      return `Withdraw ${args.amount} units to Aave v3 protocol market  to Aave v3 Pool ${market.POOL} with transaction hash: ${withdrawTxHash} status:${receipt.status}`;
-    } catch (error) {
-      return `Error withdrawing from Aave v3: ${error}`;
-    }
-  }
+			return `Withdraw ${args.amount} units to Aave v3 protocol market  to Aave v3 Pool ${market.POOL} with transaction hash: ${withdrawTxHash} status:${receipt.status}`;
+		} catch (error) {
+			return `Error withdrawing from Aave v3: ${error}`;
+		}
+	}
 
-  /**
-   * Checks if the Aave action provider supports the given network.
-   *
-   * @param network - The network to check.
-   * @returns True if the ERC20 action provider supports the network, false otherwise.
-   */
-  supportsNetwork = (network: Network) => SUPPORTED_NETWORKS.includes(network.networkId!);
+	/**
+	 * Checks if the Aave action provider supports the given network.
+	 *
+	 * @param network - The network to check.
+	 * @returns True if the ERC20 action provider supports the network, false otherwise.
+	 */
+	supportsNetwork = (network: Network) =>
+		SUPPORTED_NETWORKS.includes(network.networkId!);
 }
 
 export const aaveActionProvider = () => new AaveActionProvider();

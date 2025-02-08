@@ -6,10 +6,10 @@ const Navbar = () => {
 			<div className="text-yellow-300 text-2xl font-bold">αBees</div>
 			<div className="space-x-4">
 				<a href="/" className="text-yellow-300 hover:text-yellow-400">
-					Dashboard
+					Hive
 				</a>
 				<a href="/my-bees" className="text-yellow-300 hover:text-yellow-400">
-					My Bees
+					Garden
 				</a>
 			</div>
 		</nav>

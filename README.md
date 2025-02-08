@@ -15,6 +15,10 @@
 
 ## Architecture
 
+Separte into "Hive" and "Garden", responsible for strategy and execution respectively.
+This design help us to interact with agent on reasoning model to formulate strategy and data pipelines, while achieve low latency, private execution with agents on isolated wallets guardrails.
+
+
 ### Hive Component - Strategy formulation
 - This is where agents gather data and formulate strategy with users
 - Designed for high latency which allow us to benefit from reasoning model such as o3-mini, deepseek R1 and framework of multiple agents. We coin this "Queen LLM"
@@ -34,12 +38,14 @@
   - Policies and reference signals remain encrypted until execution to prevent sandwich attacks.
 - Agents are able to generate final instructions using the policy, which is protocol-specific (e.g., staking, swapping, supplying for yield, etc.).
 - This approach provides guardrails for trading execution.
-- For demo purposes, agents perform rebalancing on Aave.
-
+- For demo purposes, perform rebalancing on Aave and Morpho
 
 ges, we believe it is important to visualize and elaborate on the strategy.
 - LLMs provide structured output, and the frontend renders components based on OnchainKit and @geist/dappkit.
 
 
+# Development
 
-## User is able to 
+- Setup .env per .env.example
+
+- start web server with env-cmd pnpm --filter web dev

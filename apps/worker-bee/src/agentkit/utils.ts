@@ -1,17 +1,17 @@
-import { EvmWalletProvider } from "@coinbase/agentkit";
+import type { EvmWalletProvider } from "@coinbase/agentkit";
 import { encodeFunctionData } from "viem";
 
 const ERC20_ABI = [
-    {
-        inputs: [
-            { name: "spender", type: "address" },
-            { name: "amount", type: "uint256" },
-        ],
-        name: "approve",
-        outputs: [{ name: "", type: "bool" }],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
+	{
+		inputs: [
+			{ name: "spender", type: "address" },
+			{ name: "amount", type: "uint256" },
+		],
+		name: "approve",
+		outputs: [{ name: "", type: "bool" }],
+		stateMutability: "nonpayable",
+		type: "function",
+	},
 ] as const;
 
 /**
@@ -24,29 +24,32 @@ const ERC20_ABI = [
  * @returns A success message or error message
  */
 export async function approve(
-    wallet: EvmWalletProvider,
-    tokenAddress: string,
-    spenderAddress: string,
-    amount: bigint,
+	wallet: EvmWalletProvider,
+	tokenAddress: string,
+	spenderAddress: string,
+	amount: bigint,
 ): Promise<string> {
-    try {
-        const data = encodeFunctionData({
-            abi: ERC20_ABI,
-            functionName: "approve",
-            args: [spenderAddress as `0x${string}`, amount],
-        });
+	try {
+		const data = encodeFunctionData({
+			abi: ERC20_ABI,
+			functionName: "approve",
+			args: [spenderAddress as `0x${string}`, amount],
+		});
 
-        console.log(`Approving ${spenderAddress} to spend ${amount} tokens`, await wallet.getAddress());
-        const txHash = await wallet.sendTransaction({
-            from: (await wallet.getAddress()) as `0x${string}`,
-            to: tokenAddress as `0x${string}`,
-            data,
-        });
+		console.log(
+			`Approving ${spenderAddress} to spend ${amount} tokens`,
+			await wallet.getAddress(),
+		);
+		const txHash = await wallet.sendTransaction({
+			from: (await wallet.getAddress()) as `0x${string}`,
+			to: tokenAddress as `0x${string}`,
+			data,
+		});
 
-        await wallet.waitForTransactionReceipt(txHash);
+		await wallet.waitForTransactionReceipt(txHash);
 
-        return `Successfully approved ${spenderAddress} to spend ${amount} tokens`;
-    } catch (error) {
-        return `Error approving tokens: ${error}`;
-    }
+		return `Successfully approved ${spenderAddress} to spend ${amount} tokens`;
+	} catch (error) {
+		return `Error approving tokens: ${error}`;
+	}
 }
