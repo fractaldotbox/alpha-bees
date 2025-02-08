@@ -7,7 +7,7 @@ const Chatbot = () => {
 	const [messages, setMessages] = useState([
 		{
 			sender: "agent",
-			text: "Hello, I am your AlphaBees Trading Agent. How can I assist you today?",
+			text: "Hello, I am your αBees Trading Agent. How can I assist you today?",
 		},
 	]);
 	const [input, setInput] = useState("");
@@ -47,21 +47,19 @@ const Chatbot = () => {
 				<nav className="space-x-4">
 					<button
 						onClick={() => setActiveTab("chat")}
-						className={`transition-colors px-4 py-2 rounded ${
-							activeTab === "chat"
-								? "bg-amber-500 text-black"
-								: "bg-yellow-800 text-yellow-300 hover:bg-yellow-700"
-						}`}
+						className={`transition-colors px-4 py-2 rounded ${activeTab === "chat"
+							? "bg-amber-500 text-black"
+							: "bg-yellow-800 text-yellow-300 hover:bg-yellow-700"
+							}`}
 					>
 						Chat
 					</button>
 					<button
 						onClick={() => setActiveTab("portfolio")}
-						className={`transition-colors px-4 py-2 rounded ${
-							activeTab === "portfolio"
-								? "bg-amber-500 text-black"
-								: "bg-yellow-800 text-yellow-300 hover:bg-yellow-700"
-						}`}
+						className={`transition-colors px-4 py-2 rounded ${activeTab === "portfolio"
+							? "bg-amber-500 text-black"
+							: "bg-yellow-800 text-yellow-300 hover:bg-yellow-700"
+							}`}
 					>
 						My Portfolio
 					</button>
@@ -76,11 +74,10 @@ const Chatbot = () => {
 								className={`flex ${msg.sender === "agent" ? "flex-row" : "flex-row-reverse"}`}
 							>
 								<div
-									className={`p-3 rounded-lg max-w-xs break-words shadow-md ${
-										msg.sender === "agent"
-											? "bg-yellow-300 border border-yellow-400 text-gray-800"
-											: "bg-yellow-700 border border-yellow-600 text-white"
-									}`}
+									className={`p-3 rounded-lg max-w-xs break-words shadow-md ${msg.sender === "agent"
+										? "bg-yellow-300 border border-yellow-400 text-gray-800"
+										: "bg-yellow-700 border border-yellow-600 text-white"
+										}`}
 								>
 									{msg.text}
 								</div>

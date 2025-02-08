@@ -32,10 +32,9 @@ type Response = {
 	} | null;
 };
 
-// d
-
+// https://github.com/langchain-ai/langchain/issues/28895
 const llm = new ChatOpenAI({
-	model: "gpt-4o-mini",
+	model: "gpt-4o",
 	temperature: 0.1,
 	openAIApiKey: process.env.OPENAI_API_KEY,
 });
@@ -80,7 +79,7 @@ const responseSchema = z.object({
 		.nullable(),
 });
 
-const responseFormatterTool = tool(async () => {}, {
+const responseFormatterTool = tool(async () => { }, {
 	name: "responseFormatter",
 	description: "Format the LLM response into a JSON object",
 	schema: responseSchema,
@@ -149,6 +148,7 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 	} catch (error) {
 		const errorMessage =
 			error instanceof Error ? error.message : "Unknown error";
+		console.error(errorMessage);
 		return new Response(JSON.stringify({ error: errorMessage }), {
 			status: 500,
 			headers: { "Content-Type": "application/json" },

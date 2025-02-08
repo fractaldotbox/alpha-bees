@@ -39,7 +39,7 @@ importers:
         specifier: ^0.2.44
         version: 0.2.45(@langchain/core@0.3.39)
       '@langchain/openai':
-        specifier: ^0.4.2
+        specifier: ^0.4.3
         version: 0.4.3(@langchain/core@0.3.39)(ws@8.18.0)
       '@nanostores/react':
         specifier: ^0.8.4
