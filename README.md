@@ -1,21 +1,32 @@
-# αBees
+# 🐝αBees
 ![alt text](image.png)
 
 # Short description
 
-- AI agents gathering signal and yield with visualized strategies
+- AI agents gathering yield and signals with visualized strategies
 
 
 # Description
 
+### Key Features
+- 📊 Visualized Market Charts
+- 💬 Chat with Agent for Strategy
+- 🤖 Autonomous Execution by Agents with Wallets
+- 🌾 Yield Farming with Aave, Morpho
+
+To make Defi simpler, We make it
+ 1. more visual to evaluate strategies with data and expert advices. 
+ 1. less work with agents automatically deposit and rebalance for you
+
+While staying safe and private
+ - strategy are not disclosed  
+ - risk guardrails with segregated wallets
 
 
 # How it's made
 
-
 ## Architecture
-
-Separte into "Hive" and "Garden", responsible for strategy and execution respectively.
+We decoupled "Hive" and "Garden", responsible for strategy and execution respectively
 This design help us to interact with agent on reasoning model to formulate strategy and data pipelines, while achieve low latency, private execution with agents on isolated wallets guardrails.
 
 
@@ -42,6 +53,10 @@ This design help us to interact with agent on reasoning model to formulate strat
 
 ges, we believe it is important to visualize and elaborate on the strategy.
 - LLMs provide structured output, and the frontend renders components based on OnchainKit and @geist/dappkit.
+
+### For visualized charts
+- base on @geist/dapp-kit
+  - data is pulled from defillama
 
 
 # Development
