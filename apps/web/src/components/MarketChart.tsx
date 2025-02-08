@@ -14,9 +14,7 @@ const MarketChart = () => {
 		<div className="w-full min-h-[200px] bg-white rounded-lg shadow flex items-center justify-center">
 			{/* Placeholder for a live market chart */}
 			{messagesWithGraphData.length === 0 && (
-				<div className="text-black px-4">
-					Market Chart will be drawn here after you ask a question
-				</div>
+				<div className="text-black px-4">Ask me anything!</div>
 			)}
 			{messagesWithGraphData.length > 0 &&
 				messagesWithGraphData.map((message, index) => (

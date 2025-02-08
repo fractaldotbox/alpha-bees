@@ -1,21 +1,22 @@
+import WorkerBeeAvatarWidget from "@/components/WorkerBeeAvatarWidget";
 import React, { useState } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import ChatAvatarWidget from "../components/ChatAvatarWidget";
 import ChatWidget from "../components/ChatWidget";
 import MarketChart from "../components/MarketChart";
-import Navbar from "../components/Navbar.jsx";
-import Portfolio from "../components/Portfolio";
+import Navbar from "../components/Navbar.js";
+import Portfolio from "../components/Portfolio.js";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const DashboardLayout = () => {
+const GardenLayout = () => {
 	const [expandedWidget, setExpandedWidget] = useState(null);
 
 	// Default layout for grid items when not expanded.
 	const defaultLayout = [
 		{ i: "chatAvatar", x: 0, y: 0, w: 3, h: 12, minW: 3, minH: 6 },
-		{ i: "chat", x: 3, y: 0, w: 4, h: 18, minW: 6, minH: 8 },
-		{ i: "marketChart", x: 7, y: 0, w: 5, h: 10, minW: 3, minH: 6 },
+		{ i: "marketChart", x: 3, y: 0, w: 5, h: 10, minW: 3, minH: 6 },
+		{ i: "chat", x: 7, y: 0, w: 4, h: 18, minW: 6, minH: 8 },
 		// { i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
 	];
 
@@ -84,7 +85,7 @@ const DashboardLayout = () => {
 			widgetTitle = "Chat";
 		} else if (expandedWidget === "chatAvatar") {
 			widgetContent = <ChatAvatarWidget />;
-			widgetTitle = "Queen";
+			widgetTitle = "Worker";
 		} else if (expandedWidget === "marketChart") {
 			widgetContent = <MarketChart />;
 			widgetTitle = "Market Chart";
@@ -115,22 +116,19 @@ const DashboardLayout = () => {
 					draggableHandle=".widget-header"
 					draggableCancel=".no-drag"
 				>
-					<div key="chatAvatar" className="p-2">
-						{renderWidget("chatAvatar", "Queen", <ChatAvatarWidget />)}
-					</div>
-					<div key="chat" className="p-2">
-						{renderWidget("chat", "Chat", <ChatWidget />)}
-					</div>
 					<div key="marketChart" className="p-2">
 						{renderWidget("marketChart", "Market Chart", <MarketChart />)}
 					</div>
-					{/* <div key="portfolio" className="p-2">
-						{renderWidget("portfolio", "Portfolio", <Portfolio />)}
-					</div> */}
+					<div key="chatAvatar" className="p-2">
+						{renderWidget("chatAvatar", "Worker", <WorkerBeeAvatarWidget />)}
+					</div>
+					{/* <div key="chat" className="p-2">
+                        {renderWidget("chat", "Chat", <ChatWidget />)}
+                    </div> */}
 				</ResponsiveGridLayout>
 			</div>
 		</div>
 	);
 };
 
-export default DashboardLayout;
+export default GardenLayout;

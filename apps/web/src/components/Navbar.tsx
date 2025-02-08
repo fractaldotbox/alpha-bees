@@ -8,7 +8,7 @@ const Navbar = () => {
 				<a href="/" className="text-yellow-300 hover:text-yellow-400">
 					Hive
 				</a>
-				<a href="/my-bees" className="text-yellow-300 hover:text-yellow-400">
+				<a href="/garden" className="text-yellow-300 hover:text-yellow-400">
 					Garden
 				</a>
 			</div>
