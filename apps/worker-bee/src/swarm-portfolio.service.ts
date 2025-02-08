@@ -3,7 +3,7 @@ import { map, bufferTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, Observable } from 'rxjs';
 import { createPublicClient, createWalletClient, http, Address, Hex, PublicClient, Chain } from 'viem';
 
-import { erc20ActionProvider, ERC20ActionProvider, ViemWalletProvider } from '@coinbase/agentkit';
+import { erc20ActionProvider, ERC20ActionProvider, NETWORK_ID_TO_VIEM_CHAIN, ViemWalletProvider } from '@coinbase/agentkit';
 import { Network, Alchemy, AlchemySubscription, AlchemyMinedTransactionsAddress } from 'alchemy-sdk';
 
 import { baseSepolia, sepolia } from 'viem/chains';
@@ -27,7 +27,7 @@ class SwarmPortfolioService {
     constructor(addresses: Address[], tokenAddresses: Address[], networkId: string) {
         this.erc20ActionProvider = erc20ActionProvider();
         this.addresses = addresses;
-        const chain = networkId === 'sepolia' ? sepolia : baseSepolia;
+        const chain = NETWORK_ID_TO_VIEM_CHAIN[networkId];
 
         this.#publicClient = createPublicClient({
             chain,

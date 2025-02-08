@@ -4,9 +4,12 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import pino from 'pino'
 import { initializeAgent, runAutonomousMode } from './chatbot'
-const fileLogger = pino(pino.destination('worker.log'))
 
-const PORT = process.env.PORT || 8080;
+const fileLogger = pino({
+}, pino.destination('worker.log')
+)
+
+const PORT = process.env.PORT || '8080';
 
 const fastify = Fastify({
     logger: true
@@ -29,12 +32,12 @@ fastify.get('/log', async function handler(request, reply) {
 async function main() {
     try {
 
-        // const { agent, config, walletProvider } = await initializeAgent();
+        const { agent, config, walletProvider } = await initializeAgent();
         // always run autonomous mode
-        // await runAutonomousMode(agent, config, walletProvider);
+        await runAutonomousMode(agent, config, walletProvider);
 
         fileLogger.info("Starting Server with Agent...");
-        await fastify.listen({ port: PORT })
+        await fastify.listen({ port: Number(PORT) })
     } catch (err) {
         fastify.log.error(err)
         process.exit(1)

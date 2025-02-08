@@ -1,11 +1,7 @@
 import { z } from "zod";
 
 import { ethers, providers } from "ethers-v5";
-
-import { CreateAction } from "../actionDecorator";
-import { ActionProvider } from "../actionProvider";
-import { Network } from "../../network";
-import { EvmWalletProvider, WalletProvider } from "../../wallet-providers";
+import { CreateAction, ActionProvider, Network, EvmWalletProvider, WalletProvider } from "@coinbase/agentkit";
 import { SupplySchema, WithdrawSchema } from "./schemas";
 import {
   AAVEV3_BASE_SEPOLIA,
@@ -19,6 +15,7 @@ import { Address, createPublicClient, Hex, http, parseUnits } from "viem";
 import { approve } from "../../utils";
 import { baseSepolia, sepolia } from "viem/chains";
 import { clientToProvider, createProvider } from "./ethers-v5-adapter";
+import "reflect-metadata";
 
 export const SUPPORTED_NETWORKS = ["sepolia", "base-sepolia"];
 

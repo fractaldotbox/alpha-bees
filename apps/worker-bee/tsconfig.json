@@ -5,6 +5,7 @@
       "module": "commonjs",
       "outDir": "./dist",
       "rootDir": "./src",
+
       "strict": true,
       "resolveJsonModule": true,
       "esModuleInterop": true,
@@ -14,6 +15,8 @@
       "declaration": true,
       "noImplicitAny": false,
       "removeComments": false,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
 
       "baseUrl": ".",
       "paths": {
