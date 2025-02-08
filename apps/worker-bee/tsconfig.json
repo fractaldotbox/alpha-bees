@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+
+      "target": "es2022",
+      "module": "commonjs",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "strict": true,
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "declaration": true,
+      "noImplicitAny": false,
+      "removeComments": false,
+
+      "baseUrl": ".",
+      "paths": {
+        "ethers-v5": ["node_modules/ethers-v5"]
+      }
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules", "dist", "**/tests/**/**"]
+  }
+  
