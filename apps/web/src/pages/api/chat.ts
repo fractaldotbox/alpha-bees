@@ -54,9 +54,9 @@ const fetchPoolListFromDefiLlama = tool(
 );
 
 const fetchStrategyAdvice = tool(
-  async (poolId: string) => {
+  async (prompt: string) => {
     console.log("tool");
-    const response = await createStrategy();
+    const response = await createStrategy(prompt);
 
     console.log(response?.choices[0]?.message);
 
@@ -68,7 +68,9 @@ const fetchStrategyAdvice = tool(
     description:
       "Genearte a trading strategy advice that you can use to generate policy",
     schema: z.object({
-      // poolId: z.string().describe("The pool id to fetch the time series for"),
+      prompt: z
+        .string()
+        .describe("The prompt form the user to generate strategy advice"),
     }) as any,
   },
 );
