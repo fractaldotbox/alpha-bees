@@ -133,13 +133,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
       widgetContent = <Portfolio />;
       widgetTitle = "Portfolio";
     } else if (expandedWidget === "fund") {
-      widgetContent = (
-        <Fund
-          recipientAddress={address as `0x${string}`}
-          chain={baseSepolia}
-          token="ETH"
-        />
-      );
+      widgetContent = <Fund recipientAddress={address as `0x${string}`} />;
       widgetTitle = "Fund";
     }
     return (
@@ -198,11 +192,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
                   {renderWidget(
                     "fund",
                     "Fund",
-                    <Fund
-                      recipientAddress={address as `0x${string}`}
-                      chain={baseSepolia}
-                      token="ETH"
-                    />,
+                    <Fund recipientAddress={address as `0x${string}`} />,
                   )}
                 </div>
                 {/* Uncomment if needed.
