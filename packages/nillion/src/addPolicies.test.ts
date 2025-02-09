@@ -1,15 +1,14 @@
-import { describe, expect, test, vi } from "vitest";
+import { beforeAll, describe, expect, test, vi } from "vitest";
 import { addPolicies } from "./addPolicies";
+import { SCHEMA_ID } from "./fixture";
 
 describe("post obj to schema", () => {
 	test("should return array of uploaded record ids", async () => {
-		const SCHEMA_ID = "8e21e686-17ab-4507-a530-edcab0b5416a";
-
 		const data = [
 			{
 				policy: {
 					$allot:
-						"you should take advantage of higher yield. If yield is higher at your responsible market, supply more.",
+						"You should prefer market with higher yield. Yield of same asset are different on each market of different chain",
 				},
 				priority: {
 					$allot: 1,
@@ -26,7 +25,7 @@ describe("post obj to schema", () => {
 			},
 			{
 				policy: {
-					$allot: "Avoid supplying more than 90% of your total USDC balance",
+					$allot: "Avoid supplying more than 50% of your total USDC balance",
 				},
 				priority: {
 					$allot: 3,

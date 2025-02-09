@@ -36,6 +36,7 @@
 	],
 	"dependencies": {
 		"@aave/contract-helpers": "^1.31.1",
+		"nillion-sv-wrappers": "git@github.com:debuggingfuture/nillion-sv-wrappers.git",
 		"@aave/math-utils": "^1.31.1",
 		"@bgd-labs/aave-address-book": "^4.9.0",
 		"@coinbase/agentkit": "^0.1.2",
@@ -49,6 +50,7 @@
 		"fastify": "^5.2.1",
 		"md5": "^2.3.0",
 		"pino": "^9.6.0",
+		"tsx": "^4.19.2",
 		"ts-node": "^10.9.2",
 		"rxjs": "^7.8.1",
 		"twitter-api-v2": "^1.18.2",

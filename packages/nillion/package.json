@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "vitest  --mode development"
 	},
 	"keywords": [],
 	"author": "",
@@ -13,6 +13,6 @@
 		"vitest": "^3.0.5"
 	},
 	"dependencies": {
-		"nillion-sv-wrappers": "^1.0.9"
+		"nillion-sv-wrappers": "git@github.com:debuggingfuture/nillion-sv-wrappers.git"
 	}
 }

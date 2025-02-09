@@ -10,11 +10,11 @@
 
 ### Key Features
 - 📊 Visualized Market Charts
-- 💬 Chat with Agent for Strategy
+- 💬 Chat with Agent ti formulate De-Fi Strategy
 - 🤖 Autonomous Execution by Agents with Wallets
 - 🌾 Yield Farming with Aave, Morpho
 
-To make Defi simpler, We make it
+To make Defi simpler, 🐝αBees make it
  1. more visual to evaluate strategies with data and expert advices. 
  1. less work with agents automatically deposit and rebalance for you
 

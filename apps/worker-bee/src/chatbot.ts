@@ -4,8 +4,10 @@ import {
 	AgentKit,
 	CdpWalletProvider,
 	type EvmWalletProvider,
+	WalletProvider,
 	cdpApiActionProvider,
 	cdpWalletActionProvider,
+	customActionProvider,
 	erc20ActionProvider,
 	morphoActionProvider,
 	pythActionProvider,
@@ -23,8 +25,13 @@ import {
 } from "./agentkit/action-providers/aave/aaveActionProvider";
 
 import { expand, fromEvent, interval, of, race, repeat, take } from "rxjs";
+import { getAllRecords } from "./nillion";
 import { createAddressbookPrompt, createPortfolioPrompt } from "./prompt-util";
 import SwarmPortfolioService from "./swarm-portfolio.service";
+import "reflect-metadata";
+import { z } from "zod";
+import { SupplySchema } from "./agentkit/action-providers/aave/schemas";
+const NILLION_POLICY_SCHEMA_ID = "9d03997d-2200-452d-87f9-92d4728ea93e";
 
 // @ts-ignore
 BigInt.prototype.toJSON = function () {
@@ -102,31 +109,50 @@ export async function initializeAgent() {
 			networkId: process.env.NETWORK_ID || "base-sepolia",
 		};
 
-		const MORPHO_ACTION_ON = process.env.MORPHO_ACTION_ON || true;
-		const AAVE_ACTION_ON = process.env.AAVE_ACTION_ON || false;
+		const MORPHO_ACTION_ON = process.env.MORPHO_ACTION_ON === "true" || false;
+		const AAVE_ACTION_ON = process.env.AAVE_ACTION_ON === "true" || true;
 
 		const aaveAction = aaveActionProvider();
 
 		const walletProvider = await CdpWalletProvider.configureWithWallet(config);
 
+		// workaround for decorator not working and results in incorrect args
+		// recreate those actions
+
+		const customAaveAction = customActionProvider<EvmWalletProvider>(
+			aaveAction.getActions(walletProvider).map((action) => ({
+				...action,
+				invoke: async (walletProvider, args: any) => {
+					console.log("custom action provider", args, action.name);
+					if (action.name === "AaveActionProvider_supply") {
+						return await aaveAction.supply(walletProvider, args);
+					} else if (action.name === "AaveActionProvider_withdraw") {
+						return await aaveAction.withdraw(walletProvider, args);
+					}
+					// return await action.invoke(args);
+				},
+			})),
+		);
+
 		// @ts-ignore
-		await aaveAction.approveAll(walletProvider);
+		// await aaveAction.approveAll(walletProvider);
 
 		const actionProviders = [
 			wethActionProvider(),
 			pythActionProvider(),
 			walletActionProvider(),
 			erc20ActionProvider(),
-			AAVE_ACTION_ON && aaveAction,
+			AAVE_ACTION_ON && customAaveAction,
 			MORPHO_ACTION_ON && morphoActionProvider(),
+
 			// cdpApiActionProvider({
-			//   apiKeyName: process.env.CDP_API_KEY_NAME,
-			//   apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+			// 	apiKeyName: process.env.CDP_API_KEY_NAME,
+			// 	apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
 			// }),
 
 			// cdpWalletActionProvider({
-			//   apiKeyName: process.env.CDP_API_KEY_NAME,
-			//   apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+			// 	apiKeyName: process.env.CDP_API_KEY_NAME,
+			// 	apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
 			// }),
 		].filter(Boolean) as ActionProvider[];
 
@@ -147,15 +173,17 @@ export async function initializeAgent() {
 			llm,
 			tools,
 			checkpointSaver: memory,
-			messageModifier: `
+			messageModifier:
+				`
         You are a helpful agent that can interact onchain using the Coinbase Developer Platform AgentKit. You are 
-        empowered to interact onchain using your tools. Never use faucet and request_faucet_funds action. Before executing your first action, get the wallet details to see what network 
+        empowered to interact onchain using your tools. Before executing your first action, get the wallet details to see what network 
         you're on. If there is a 5XX (internal) HTTP error code, ask the user to try again later. If someone 
         asks you to do something you can't do with your currently available tools, you must say so, and 
         encourage them to implement it themselves using the CDP SDK + Agentkit, recommend they go to 
         docs.cdp.coinbase.com for more information. Be concise and helpful with your responses. Refrain from 
         restating your tools' descriptions unless it is explicitly requested.
-        `,
+        ` + `Fund yourself using the faucet as a start`,
+			// + `Never use faucet and request_faucet_funds action.`,
 		});
 
 		return { agent, config: agentConfig, walletProvider };
@@ -180,6 +208,10 @@ export async function runAutonomousMode(
 ) {
 	console.log("Starting autonomous mode...");
 
+	const nillionPolicies = await getAllRecords(NILLION_POLICY_SCHEMA_ID);
+
+	console.log("Retrieved Policy from the Queen:", nillionPolicies);
+	console.log("--------");
 	// TODO load policy from ipfs
 
 	const swarmAddresses = [
@@ -219,13 +251,15 @@ export async function runAutonomousMode(
 
 				console.log(portfolio);
 
+				// const thought = 'fund yourself with usdc faucet';
+
 				const thought =
 					createPortfolioPrompt(config.networkId, portfolio) +
 					"When you communicate token balance, append n to the amount if it is whole unit. i.e. 4n USDC" +
 					"You can use the tools to gather data to make your decision" +
 					"Aave refers to the v3 lending protocol" +
 					"for erc20 token and actions like get_balance or supply, results is whole unit accounted for decimals. i.e. 4 means 0.000004USDC not 4USDC as USDC use 6 decimals" +
-					"Supply is not a simple transfer. use aave action to supply USDC onto Aave protocol, in testnet such as sepolia or base-sepolia." +
+					"Supply is not a simple transfer. use Aave action to supply USDC onto Aave protocol, in testnet such as sepolia or base-sepolia. Use correct arguments" +
 					"Do not ask for confirmation for supply" +
 					"Do not use typical address on mainnet which will be different" +
 					"Do not deploy any ERC20, NFT" +
@@ -251,7 +285,6 @@ export async function runAutonomousMode(
 						console.log(chunk.agent.messages[0].content);
 					} else if ("tools" in chunk) {
 						console.log(chunk.tools.messages[0].content);
-						console.log(chunk.tools);
 					}
 					console.log("-------------------");
 				}
@@ -267,6 +300,7 @@ export async function runAutonomousMode(
 async function main() {
 	try {
 		const { agent, config, walletProvider } = await initializeAgent();
+
 		// always run autonomous mode
 		await runAutonomousMode(agent, config, walletProvider);
 	} catch (error) {

@@ -1,4 +1,4 @@
-import process from "node:process";
+import { SecretVaultWrapper } from "nillion-sv-wrappers";
 
 export const config = {
 	orgCredentials: {
@@ -19,4 +19,17 @@ export const config = {
 			did: "did:nil:testnet:nillion167pglv9k7m4gj05rwj520a46tulkff332vlpjp",
 		},
 	],
+};
+
+export const getAllRecords = async (schemaId: any, filter = {}) => {
+	const collection = new SecretVaultWrapper(
+		config.nodes,
+		config.orgCredentials,
+		schemaId,
+	);
+	await collection.init();
+
+	const decryptedCollectionData = await collection.readFromNodes(filter);
+
+	return decryptedCollectionData;
 };

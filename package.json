@@ -3,6 +3,7 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "turbo dev",
+		"test": "turbo test",
 		"check": "biome check . --no-errors-on-unmatched",
 		"check:fix": "biome check . --write --no-errors-on-unmatched"
 	},
