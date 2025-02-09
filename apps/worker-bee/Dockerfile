@@ -17,6 +17,6 @@ COPY --chown=node:node . .
 # from npm i --package-lock-only --omit=optional
 RUN npm i
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD [ "npm", "start" ]

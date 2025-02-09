@@ -13,16 +13,24 @@ import { useEffect, useState } from "react";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const addresses = [
-  // sepolia ETH agent
-  "0x4A9b1ECD1297493B4EfF34652710BD1cE52c6526",
 
+
+const SWARM_CONFIG = {
+  '0x4A9b1ECD1297493B4EfF34652710BD1cE52c6526': {
+    'endpoint': 'https://autonome.alt.technology/v2-fspfdq'
+  },
   // base-sepolia Aave USDC agent
-  "0x94D8C42AFE90C15b7Dd55902f25ed6253fD47F8c",
-
+  '0x94D8C42AFE90C15b7Dd55902f25ed6253fD47F8c': {
+    'endpoint': 'https://autonome.alt.technology/v2-fspfdq'
+  },
   // base-sepolia Morpho USDC agent
-  "0x6B608C852850234d42e0C87db86C491A972E3E01",
-] as `0x${string}`[];
+  '0x6B608C852850234d42e0C87db86C491A972E3E01': {
+    'endpoint': 'https://autonome.alt.technology/v2-fspfdq'
+  }
+} as Record<`0x${string}`, { endpoint: string }>;
+
+const addresses = Object.keys(SWARM_CONFIG) as `0x${string}`[];
+
 
 // Add props interface
 interface GardenLayoutProps {
@@ -128,7 +136,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
       );
       widgetTitle = "Positions";
     } else if (expandedWidget === "logs") {
-      widgetContent = <LogsWidget />;
+      widgetContent = <LogsWidget url={SWARM_CONFIG[address as `0x${string}`]?.endpoint} />;
       widgetTitle = " Logs";
     } else if (expandedWidget === "portfolio") {
       widgetContent = <Portfolio />;
@@ -136,7 +144,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
     }
 
     // else if (expandedWidget === "fund") {
-    //   widgetContent = <Fund recipientAddress={address as `0x${string}`} />;
+    //   widgetContent = <Fund recipientAddress={address as `0x${ string } `} />;
     //   widgetTitle = "Fund";
     // }
     return (
@@ -183,7 +191,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
                     "positions",
                     "Positions",
                     <PositionsWidget
-                      walletAddress={address as `0x${string}`}
+                      walletAddress={address as `0x${string} `}
                     />,
                   )}
                 </div>
@@ -191,7 +199,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
                   {renderWidget(
                     "transactions",
                     "Transactions",
-                    <TransactionsWidget address={address as `0x${string}`} />,
+                    <TransactionsWidget address={address as `0x${string} `} />,
                   )}
                 </div>
                 <div key="logs" className="p-2">
@@ -201,7 +209,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
                   {renderWidget(
                     "fund",
                     "Fund",
-                    <Fund recipientAddress={address as `0x${string}`} />,
+                    <Fund recipientAddress={address as `0x${ string } `} />,
                   )}
                 </div> */}
                 {/* Uncomment if needed.

@@ -72,7 +72,6 @@ class SwarmPortfolioService {
 		const emitter = new EventTarget();
 
 		const event$ = fromEvent(emitter, "transaction");
-
 		console.log("start listen to swarm portfolio");
 		this.#alchemy.ws.on(
 			{

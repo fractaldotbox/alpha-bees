@@ -88,6 +88,7 @@ export async function initializeAgent() {
 	try {
 		const agentName = process.env.AGENT_NAME || "Worker Bee";
 		console.log(`Initializing agent: ${agentName}`);
+		console.log(`network id:`, process.env.NETWORK_ID)
 
 		// Initialize LLM
 		const llm = new ChatOpenAI({
@@ -231,7 +232,7 @@ export async function runAutonomousMode(
 	const swarmPortfolioService = new SwarmPortfolioService(
 		swarmAddresses,
 		[markets.AaveV3BaseSepolia.ASSETS.USDC.UNDERLYING],
-		"base-sepolia",
+		config.networkId,
 	);
 
 	// Create an observable from an event (replace 'actionEvent' with the actual event name)

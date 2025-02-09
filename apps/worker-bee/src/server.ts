@@ -7,13 +7,13 @@ import { initializeAgent, runAutonomousMode } from "./chatbot";
 
 const fileLogger = pino({}, pino.destination("worker.log"));
 
-const PORT = process.env.PORT || "8080";
+const PORT = process.env.PORT || "3000";
 
 const fastify = Fastify({
 	logger: true,
 });
 
-fastify.get("/log", async function handler(request, reply) {
+fastify.get("/chat", async function handler(request, reply) {
 	try {
 		const logPath = path.resolve(__dirname, "../worker.log");
 
