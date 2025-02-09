@@ -8,9 +8,7 @@ import ChatAvatarWidget from "../components/ChatAvatarWidget";
 import ChatWidget from "../components/ChatWidget";
 import Navbar from "../components/Navbar.js";
 import Portfolio from "../components/Portfolio";
-import { Providers } from "@/components/Providers";
 import { Fund } from "@/components/Fund";
-import { baseSepolia } from "wagmi/chains";
 import { useEffect, useState } from "react";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
