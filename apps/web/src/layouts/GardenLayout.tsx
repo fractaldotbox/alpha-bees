@@ -71,10 +71,10 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
   // Default layout for grid items when not expanded.
   const defaultLayout = [
     { i: "chatAvatar", x: 0, y: 0, w: 3, h: 8, minW: 3, minH: 6 },
-    { i: "logs", x: 7, y: 0, w: 6, h: 18, minW: 6, minH: 8 },
-    { i: "positions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 3 },
-    { i: "transactions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 6 },
-    { i: "fund", x: 2, y: 8, w: 5, h: 10, minW: 3, minH: 6 },
+    // { i: "logs", x: 7, y: 0, w: 6, h: 18, minW: 6, minH: 8 },
+    { i: "positions", x: 0, y: 1, w: 6, h: 10, minW: 6, minH: 3 },
+    { i: "transactions", x: 0, y: 0, w: 5, h: 10, minW: 3, minH: 6 },
+    { i: "fund", x: 2, y: 2, w: 5, h: 10, minW: 3, minH: 6 },
     // {i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
   ];
 

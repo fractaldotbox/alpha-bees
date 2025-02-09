@@ -15,13 +15,9 @@
 - 🌾 Yield Farming with Aave, Morpho across multiple markets
 
 To make Defi simpler, 🐝αBees
- 1. provides visual and professional strategies with data and expert advices. 
- 1. effortless by with agents automatically deposit and rebalance for you
-
-While staying safe and private
- - strategy are not disclosed  
- - risk guardrails with segregated wallets
-
+ - provides visual and professional strategies with data and expert advices. 
+ - effortless by with agents automatically deposit and rebalance for you
+ - Keep you safe with private strategy and risk guardrails on segregated wallets 
 
 # How it's made
 
@@ -58,9 +54,6 @@ This design help us to interact with agent on reasoning model to formulate strat
 - For demo purposes, perform rebalancing on Aave and Morpho.
 
 
-### For visualized charts
-- base on @geist/dapp-kit
-  - data is pulled from defillama
 
 ![alt text](image-1.png)
 
