@@ -27,10 +27,12 @@ While staying safe and private
 
 ## Architecture
 
+
 We decoupled "Hive" and "Garden", responsible for strategy and execution respectively
 This design help us to interact with agent on reasoning model to formulate strategy and data pipelines, while achieve low latency, private execution with agents on isolated wallets guardrails.
 
 
+![alt text](image-2.png)
 
 
 ### Hive Component - Strategy formulation
