@@ -42,7 +42,9 @@ const PositionsWidget = ({ walletAddress }: { walletAddress: string }) => {
         <table className="w-full">
           <thead>
             <tr className="border-b">
-              <th className="text-left p-2">Pool</th>
+              <th className="text-left p-2">Pool Address</th>
+              <th className="text-left p-2">Protocol</th>
+              <th className="text-left p-2">Token</th>
               <th className="text-left p-2">Amount</th>
             </tr>
           </thead>
@@ -51,7 +53,9 @@ const PositionsWidget = ({ walletAddress }: { walletAddress: string }) => {
               <td className="p-2">
                 {`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}
               </td>
-              <td className="p-2">{400} USDC</td>
+              <td className="p-2">AAVE V3</td>
+              <td className="p-2">USDC</td>
+              <td className="p-2">{400}</td>
             </tr>
           </tbody>
         </table>

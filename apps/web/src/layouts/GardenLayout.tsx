@@ -133,10 +133,12 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
     } else if (expandedWidget === "portfolio") {
       widgetContent = <Portfolio />;
       widgetTitle = "Portfolio";
-    } else if (expandedWidget === "fund") {
-      widgetContent = <Fund recipientAddress={address as `0x${string}`} />;
-      widgetTitle = "Fund";
     }
+
+    // else if (expandedWidget === "fund") {
+    //   widgetContent = <Fund recipientAddress={address as `0x${string}`} />;
+    //   widgetTitle = "Fund";
+    // }
     return (
       <div className="h-screen bg-gray-900">
         <Navbar />
@@ -195,13 +197,13 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
                 <div key="logs" className="p-2">
                   {renderWidget("logs", "Logs", <LogsWidget />)}
                 </div>
-                <div key="fund" className="p-2">
+                {/* <div key="fund" className="p-2">
                   {renderWidget(
                     "fund",
                     "Fund",
                     <Fund recipientAddress={address as `0x${string}`} />,
                   )}
-                </div>
+                </div> */}
                 {/* Uncomment if needed.
                         <div key="chat" className="p-2">
                             {renderWidget("chat", "Chat", <ChatWidget />)}
