@@ -61,15 +61,20 @@ const ChatWidget = () => {
 				{messages.map((msg, index) => (
 					<div
 						key={index}
-						className={`grid items-start gap-4 ${msg.sender === "agent"
-							? "grid-cols-[max-content,1fr]"
-							: "grid-cols-[1fr,max-content]"
-							}`}
+						className={`grid items-start gap-4 ${
+							msg.sender === "agent"
+								? "grid-cols-[max-content,1fr]"
+								: "grid-cols-[1fr,max-content]"
+						}`}
 					>
 						<ChatBubble message={msg.text} sender={msg.sender} />
 					</div>
 				))}
-				{loading && <div className="text-yellow-300">Let me think slowly and clearly...</div>}
+				{loading && (
+					<div className="text-yellow-300">
+						Let me think slowly and clearly...
+					</div>
+				)}
 			</div>
 
 			{/* Input Form */}

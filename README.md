@@ -26,8 +26,11 @@ While staying safe and private
 # How it's made
 
 ## Architecture
+
 We decoupled "Hive" and "Garden", responsible for strategy and execution respectively
 This design help us to interact with agent on reasoning model to formulate strategy and data pipelines, while achieve low latency, private execution with agents on isolated wallets guardrails.
+
+
 
 
 ### Hive Component - Strategy formulation
@@ -42,6 +45,7 @@ This design help us to interact with agent on reasoning model to formulate strat
 
 
 ### Garden Component – Trade Execution
+- Each "Bee" (Agent) is responsible for one market (e.g. USDC of Aave on base-sepolia).
 - Agents will tap into real-time data and execute trades based on a predefined policy.
 - Execution can be implemented through simple algorithms or via a worker LLM that opts for low cost and low latency (e.g., GPT-4).
 - Policies are JSON-based and include both strategy and guardrails:
@@ -58,9 +62,40 @@ ges, we believe it is important to visualize and elaborate on the strategy.
 - base on @geist/dapp-kit
   - data is pulled from defillama
 
+![alt text](image-1.png)
+
+### Flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI
+    actor Queen
+    User->>UI: User prompt and ask for strategy
+    UI->>Queen: direct query to reasoning model
+    UI->>User: Show user markets charts and ask for risk profile
+    UI->>Queen: User confirm strategy
+    Queen->>Nillion: Commit Strategy
+    create actor Bees
+    UI->>Bees: User fund wallets
+    Bees->>Bees: Autonomous execution
+    User->>UI: check portfolio performance
+```
+
+```mermaid
+sequenceDiagram
+    actor Bee
+    Bee->>Nillion: Read strategy from Queen
+    Bee->>RPC: Listen for other bees' transaction
+    Bee->>Pyth: Query latest prices
+    Bee->>Bee: Analyze Swarm portfolio and evaluate action 
+    Bee->>CDP: Invoke wallet
+    CDP->>Aave: Execute supply or withdraw from Aave/Morpho
+```
+
 
 # Development
 
 - Setup .env per .env.example
 
-- start web server with env-cmd pnpm --filter web dev
+- start web server with env-cmd pnpm --filter web dev 
