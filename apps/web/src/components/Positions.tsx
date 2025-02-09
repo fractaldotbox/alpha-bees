@@ -1,4 +1,6 @@
 import { useSupplyEvents } from "@/hooks/useSupplyEvents";
+import { useWithdrawEvents } from "@/hooks/useWithdrawEvents";
+import { useMemo } from "react";
 
 const PositionsWidget = ({ walletAddress }: { walletAddress: string }) => {
   const { events, isLoading, error } = useSupplyEvents(walletAddress);
@@ -7,35 +9,50 @@ const PositionsWidget = ({ walletAddress }: { walletAddress: string }) => {
   if (error) return <div>Error loading positions</div>;
   if (!events || events.length === 0) return <div>No positions found</div>;
 
+  const {
+    events: withdrawEvents,
+    isLoading: withdrawEventsLoading,
+    error: withdrawEventsError,
+  } = useWithdrawEvents(walletAddress);
+
+  if (withdrawEventsLoading) return <div>Loading...</div>;
+  if (withdrawEventsError) return <div>Error loading positions</div>;
+
+  // Calculate total supply and withdrawals using useMemo
+  const totalSupply = useMemo(() => {
+    return events.reduce((acc, event) => {
+      return acc + (event.amount || 0n);
+    }, 0n);
+  }, [events]);
+
+  // Calculate total withdrawals
+  const totalWithdraw = useMemo(() => {
+    return (
+      withdrawEvents?.reduce((acc, event) => {
+        return acc + (event.amount || 0n);
+      }, 0n) || 0n
+    );
+  }, [withdrawEvents]);
+
+  // Calculate net position
+  const netPosition = totalSupply - totalWithdraw;
+
   return (
     <div className="w-full min-h-[200px] !bg-white rounded-lg shadow p-4">
       <table className="w-full bg-white">
         <thead>
           <tr className="border-b">
-            <th className="text-left p-2">Event Type</th>
+            <th className="text-left p-2">Pool</th>
             <th className="text-left p-2">Amount</th>
-            {/* <th className="text-left p-2">Timestamp</th>
-            <th className="text-left p-2">Transaction</th> */}
           </tr>
         </thead>
         <tbody>
           {events.map((event, index) => (
-            <tr key={index} className="border-b hover:bg-gray-50">
-              <td className="p-2">{event.reserve}</td>
-              <td className="p-2">{event.amount}</td>
-              {/* <td className="p-2">
-                {new Date(event.timestamp).toLocaleString()}
-              </td> */}
-              {/* <td className="p-2">
-                <a
-                  href={`https://sepolia.basescan.org/tx/${event.transactionHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  View
-                </a>
-              </td> */}
+            <tr key={index} className="border-b hover:bg-gray-50 ">
+              <td className="p-2">
+                0x07eA79F68B2B3df564D0A34F8e19D9B1e339814b
+              </td>
+              <td className="p-2">{netPosition}</td>
             </tr>
           ))}
         </tbody>
