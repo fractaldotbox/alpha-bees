@@ -1,3 +1,4 @@
+import { storeToNillionVault } from "@/lib/nillion";
 import { createStrategy } from "@/lib/strategy";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { tool } from "@langchain/core/tools";
@@ -15,7 +16,7 @@ const modifier = `
   - fetchPoolChartFromId
   - fetchStrategyAdvice
 
-  If someone asks you to GENERATE OR ADVISE a strategy, you need to use the fetchStrategyAdvice tool.  You must pass in the user prompt directly to the tool. Render the response from there instead of your own responses.
+  If someone asks you to GENERATE OR ADVISE a strategy, you need to use the fetchStrategyAdvice tool.  You must pass in the user prompt directly to the tool. Render the response from there instead of your own responses. You need to indicate to the user that the strategy will be saved onto a startegy vault that will be accesible to the worker agents so that they can execute the strategy.
 
   If someone requests you to draw a chart, you just need to use the fetchPoolTimeSeriesFromId tool to get the time series data. Get the relevant ones that the user needs, the arguments can be obtained through the fetchPoolListFromDefiLlama tool.
   Draw charts when applicable, even if the user does not ask for it.
@@ -59,6 +60,7 @@ const fetchStrategyAdvice = tool(
   async ({ prompt }: { prompt: string }) => {
     try {
       const response = await createStrategy(prompt);
+      storeToNillionVault("strategy", JSON.stringify(response));
       return response;
     } catch (e) {
       console.error("Failed to generate strategy:", e);
