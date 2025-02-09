@@ -13,12 +13,17 @@ const modifier = `
   You can use the following tools to help you make analysis and draw charts, for the second tool to work, you need to run the first tool first to obtain the ID:
   - fetchPoolListFromDefiLlama
   - fetchPoolChartFromId
+  - fetchStrategyAdvice
 
+If someone asks you to generate a strategy or advises you on a strategy, you need to use the fetchStrategyAdvice tool.  You must pass in the user prompt directly to the tool. Render the response from there instead of your own responses.
 
   If someone requests you to draw a chart, you just need to use the fetchPoolTimeSeriesFromId tool to get the time series data. Get the relevant ones that the user needs, the arguments can be obtained through the fetchPoolListFromDefiLlama tool.
   Please supply the correct poolIds for the chart. You can pass in multiple poolIds if you want to draw multiple charts.
   If do have to draw a chart, do indicate the user to look at the "Market Chart" section on the screen.
 
+  If someone requests you to draw a chart, you just need to use the fetchPoolTimeSeriesFromId tool to get the time series data. Get the relevant ones that the user needs, the arguments can be obtained through the fetchPoolListFromDefiLlama tool.
+  Please supply the correct poolIds for the chart. You can pass in multiple poolIds if you want to draw multiple charts.
+  If do have to draw a chart, do indicate the user to look at the "Market Chart" section on the screen.
 
 
   Be concise and helpful with your responses.
@@ -54,19 +59,19 @@ const fetchPoolListFromDefiLlama = tool(
 );
 
 const fetchStrategyAdvice = tool(
-  async (prompt: string) => {
-    console.log("tool");
-    const response = await createStrategy(prompt);
-
-    console.log(response?.choices[0]?.message);
-
-    // TODO parsing
-    return response?.choices[0]?.message;
+  async ({ prompt }: { prompt: string }) => {
+    try {
+      const response = await createStrategy(prompt);
+      return response;
+    } catch (e) {
+      console.error("Failed to generate strategy:", e);
+      return [];
+    }
   },
   {
     name: "fetchStrategyAdvice",
     description:
-      "Genearte a trading strategy advice that you can use to generate policy",
+      "Generate a trading strategy advice that you can use to generate policy",
     schema: z.object({
       prompt: z
         .string()
@@ -121,13 +126,13 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
     console.log("generating response");
 
     const llmWithTools = llm.bindTools([
-      // fetchPoolListFromDefiLlama,
-      // fetchPoolTimeSeriesFromId,
+      fetchPoolListFromDefiLlama,
+      fetchPoolTimeSeriesFromId,
       fetchStrategyAdvice,
     ]);
 
     const messages = [
-      //   new SystemMessage({ content: modifier }),
+      new SystemMessage({ content: modifier }),
       new HumanMessage({ content: message }),
     ];
 
