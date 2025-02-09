@@ -112,7 +112,7 @@ Important notes:
 	})
 	async supply(
 		walletProvider: EvmWalletProvider,
-		args: z.infer<typeof SupplySchema>,
+		args: z.infer<typeof SupplySchema>
 	): Promise<string> {
 		try {
 			if (BigInt(args.amount) <= 0) {

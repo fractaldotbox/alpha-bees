@@ -13,6 +13,6 @@
 		"vitest": "^3.0.5"
 	},
 	"dependencies": {
-		"nillion-sv-wrappers": "^1.0.9"
+		"nillion-sv-wrappers": "git@github.com:debuggingfuture/nillion-sv-wrappers.git"
 	}
 }

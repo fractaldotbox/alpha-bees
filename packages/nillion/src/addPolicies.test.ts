@@ -8,7 +8,7 @@ describe("post obj to schema", () => {
 			{
 				policy: {
 					$allot:
-						"you should take advantage of higher yield. If yield is higher at your responsible market, supply more.",
+						"You should prefer market with higher yield. Yield of same asset are different on each market of different chain",
 				},
 				priority: {
 					$allot: 1,
@@ -25,7 +25,7 @@ describe("post obj to schema", () => {
 			},
 			{
 				policy: {
-					$allot: "Avoid supplying more than 90% of your total USDC balance",
+					$allot: "Avoid supplying more than 50% of your total USDC balance",
 				},
 				priority: {
 					$allot: 3,

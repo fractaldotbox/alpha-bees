@@ -5,7 +5,7 @@ export const addPolicies = async (data, schemaId: any) => {
 	const collection = new SecretVaultWrapper(
 		config.nodes,
 		config.orgCredentials,
-		schemaId,
+		'9d03997d-2200-452d-87f9-92d4728ea93e',
 	);
 	await collection.init();
 	console.log("✅ Collection initialized");

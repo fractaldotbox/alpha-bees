@@ -37,7 +37,8 @@ export const SupplySchema = z
 			),
 	})
 	.strip()
-	.describe("Instructions for supplying assets");
+	.describe("Instructions for supplying assets")
+	.strict();
 
 export const WithdrawSchema = z
 	.object({
@@ -51,4 +52,5 @@ export const WithdrawSchema = z
 			),
 	})
 	.strip()
-	.describe("Instructions for withdrawing assets");
+	.describe("Instructions for withdrawing assets")
+	.strict();

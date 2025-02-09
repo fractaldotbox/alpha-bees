@@ -22,3 +22,8 @@ export const createAddressbookPrompt = (networkId: string) => {
 
 	return prompt;
 };
+
+
+export const createPolicyPrompt = () => {
+
+}
