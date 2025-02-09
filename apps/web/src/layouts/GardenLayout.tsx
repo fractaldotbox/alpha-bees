@@ -1,24 +1,47 @@
+import LogsWidget from "@/components/LogsWidget";
+import Position from "@/components/Positions";
+import PositionsWidget from "@/components/Positions";
+import Sidebar from "@/components/Sidebar";
+import TransactionsWidget from "@/components/Transactions";
 import WorkerBeeAvatarWidget from "@/components/WorkerBeeAvatarWidget";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import ChatAvatarWidget from "../components/ChatAvatarWidget";
 import ChatWidget from "../components/ChatWidget";
 import MarketChart from "../components/MarketChart";
 import Navbar from "../components/Navbar.js";
-import Portfolio from "../components/Portfolio.js";
+import Portfolio from "../components/Portfolio";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const addresses = [
+	// sepolia ETH agent
+	"0x4A9b1ECD1297493B4EfF34652710BD1cE52c6526",
+
+	// base-sepolia Aave USDC agent
+	"0x94D8C42AFE90C15b7Dd55902f25ed6253fD47F8c",
+
+	// base-sepolia Morpho USDC agent
+	"0x6B608C852850234d42e0C87db86C491A972E3E01",
+] as `0x${string}`[];
 
 const GardenLayout = () => {
 	const [expandedWidget, setExpandedWidget] = useState(null);
 
+	const [isDataReady, setIsDataReady] = useState<boolean>(false);
 	// Default layout for grid items when not expanded.
 	const defaultLayout = [
-		{ i: "chatAvatar", x: 0, y: 0, w: 3, h: 12, minW: 3, minH: 6 },
-		{ i: "marketChart", x: 3, y: 0, w: 5, h: 10, minW: 3, minH: 6 },
-		{ i: "chat", x: 7, y: 0, w: 4, h: 18, minW: 6, minH: 8 },
-		// { i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
+		{ i: "chatAvatar", x: 0, y: 0, w: 3, h: 8, minW: 3, minH: 6 },
+		{ i: "logs", x: 7, y: 0, w: 6, h: 18, minW: 6, minH: 8 },
+		{ i: "positions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 6 },
+		{ i: "transactions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 6 },
+		// {i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
 	];
+
+	// hack on flash of unstyled content
+	useEffect(() => {
+		setIsDataReady(true);
+	}, []);
 
 	// SVG icons for expand and collapse actions.
 	const ExpandIcon = () => (
@@ -86,9 +109,15 @@ const GardenLayout = () => {
 		} else if (expandedWidget === "chatAvatar") {
 			widgetContent = <ChatAvatarWidget />;
 			widgetTitle = "Worker";
+		} else if (expandedWidget === "transactions") {
+			widgetContent = <TransactionsWidget />;
+			widgetTitle = "Transactions";
 		} else if (expandedWidget === "marketChart") {
-			widgetContent = <MarketChart />;
-			widgetTitle = "Market Chart";
+			widgetContent = <PositionsWidget />;
+			widgetTitle = "Positions";
+		} else if (expandedWidget === "logs") {
+			widgetContent = <LogsWidget />;
+			widgetTitle = " Logs";
 		} else if (expandedWidget === "portfolio") {
 			widgetContent = <Portfolio />;
 			widgetTitle = "Portfolio";
@@ -104,28 +133,56 @@ const GardenLayout = () => {
 	}
 
 	return (
-		<div className="h-screen bg-gray-900">
-			<Navbar />
-			<div className="p-4">
-				<ResponsiveGridLayout
-					className="layout"
-					layouts={{ lg: defaultLayout }}
-					breakpoints={{ lg: 0 }}
-					cols={{ lg: 12 }}
-					rowHeight={30}
-					draggableHandle=".widget-header"
-					draggableCancel=".no-drag"
-				>
-					<div key="marketChart" className="p-2">
-						{renderWidget("marketChart", "Market Chart", <MarketChart />)}
+		<div className="h-screen bg-gray-900 flex">
+			<div className="flex-1">
+				<Navbar />
+				<div className="flex flex-row h-full">
+					<div className="w-1/4">
+						<Sidebar addresses={addresses} />
 					</div>
-					<div key="chatAvatar" className="p-2">
-						{renderWidget("chatAvatar", "Worker", <WorkerBeeAvatarWidget />)}
+					<div className="p-4 w-full">
+						{isDataReady && (
+							<ResponsiveGridLayout
+								className="layout "
+								layouts={{ lg: defaultLayout }}
+								breakpoints={{ lg: 0 }}
+								cols={{ lg: 12 }}
+								rowHeight={30}
+								draggableHandle=".widget-header"
+								draggableCancel=".no-drag"
+							>
+								{/* <div key="marketChart" className="p-2">
+								{renderWidget("marketChart", "Market Chart", <MarketChart />)}
+							</div> */}
+								<div key="chatAvatar" className="p-2">
+									{renderWidget(
+										"chatAvatar",
+										"Worker",
+										<WorkerBeeAvatarWidget />,
+									)}
+								</div>
+								<div key="positions" className="p-2">
+									{renderWidget("positions", "Positions", <PositionsWidget />)}
+								</div>
+								<div key="transactions" className="p-2">
+									{renderWidget(
+										"transactions",
+										"Transactions",
+										<TransactionsWidget />,
+									)}
+								</div>
+								<div key="logs" className="p-2">
+									{renderWidget("logs", "Logs", <LogsWidget />)}
+								</div>
+								{/* Uncomment if needed.
+                        <div key="chat" className="p-2">
+                            {renderWidget("chat", "Chat", <ChatWidget />)}
+                        </div>
+                        */}
+							</ResponsiveGridLayout>
+						)}
 					</div>
-					{/* <div key="chat" className="p-2">
-                        {renderWidget("chat", "Chat", <ChatWidget />)}
-                    </div> */}
-				</ResponsiveGridLayout>
+				</div>
 			</div>
 		</div>
 	);

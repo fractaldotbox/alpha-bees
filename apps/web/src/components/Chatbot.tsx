@@ -41,25 +41,27 @@ const Chatbot = () => {
 						className="w-10 h-10 mr-2 filter brightness-110"
 					/>
 					<h1 className="font-bold text-2xl text-yellow-200">
-						αBees <span className="ml-1">🤖🐝</span>
+						🐝αBees <span className="ml-1">🤖🐝</span>
 					</h1>
 				</div>
 				<nav className="space-x-4">
 					<button
 						onClick={() => setActiveTab("chat")}
-						className={`transition-colors px-4 py-2 rounded ${activeTab === "chat"
-							? "bg-amber-500 text-black"
-							: "bg-yellow-800 text-yellow-300 hover:bg-yellow-700"
-							}`}
+						className={`transition-colors px-4 py-2 rounded ${
+							activeTab === "chat"
+								? "bg-amber-500 text-black"
+								: "bg-yellow-800 text-yellow-300 hover:bg-yellow-700"
+						}`}
 					>
 						Chat
 					</button>
 					<button
 						onClick={() => setActiveTab("portfolio")}
-						className={`transition-colors px-4 py-2 rounded ${activeTab === "portfolio"
-							? "bg-amber-500 text-black"
-							: "bg-yellow-800 text-yellow-300 hover:bg-yellow-700"
-							}`}
+						className={`transition-colors px-4 py-2 rounded ${
+							activeTab === "portfolio"
+								? "bg-amber-500 text-black"
+								: "bg-yellow-800 text-yellow-300 hover:bg-yellow-700"
+						}`}
 					>
 						My Portfolio
 					</button>
@@ -74,10 +76,11 @@ const Chatbot = () => {
 								className={`flex ${msg.sender === "agent" ? "flex-row" : "flex-row-reverse"}`}
 							>
 								<div
-									className={`p-3 rounded-lg max-w-xs break-words shadow-md ${msg.sender === "agent"
-										? "bg-yellow-300 border border-yellow-400 text-gray-800"
-										: "bg-yellow-700 border border-yellow-600 text-white"
-										}`}
+									className={`p-3 rounded-lg max-w-xs break-words shadow-md ${
+										msg.sender === "agent"
+											? "bg-yellow-300 border border-yellow-400 text-gray-800"
+											: "bg-yellow-700 border border-yellow-600 text-white"
+									}`}
 								>
 									{msg.text}
 								</div>
