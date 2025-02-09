@@ -1,6 +1,7 @@
 import { useSupplyEvents } from "@/hooks/useSupplyEvents";
 import { useWithdrawEvents } from "@/hooks/useWithdrawEvents";
 import { useMemo } from "react";
+import usdcLogo from "@/assets/usdc-logo.svg";
 
 const PositionsWidget = ({ walletAddress }: { walletAddress: string }) => {
   const { events, isLoading, error } = useSupplyEvents(walletAddress);
@@ -44,17 +45,20 @@ const PositionsWidget = ({ walletAddress }: { walletAddress: string }) => {
             <tr className="border-b">
               <th className="text-left p-2">Pool Address</th>
               <th className="text-left p-2">Protocol</th>
-              <th className="text-left p-2">Token</th>
+              <th className="text-left p-2">Asset</th>
               <th className="text-left p-2">Amount</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b hover:bg-gray-50 ">
+            <tr className="border-b hover:bg-gray-50">
               <td className="p-2">
                 {`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}
               </td>
               <td className="p-2">AAVE V3</td>
-              <td className="p-2">USDC</td>
+              <td className="p-2 flex items-center gap-2">
+                <img src={usdcLogo.src} alt="USDC icon" className="w-5 h-5" />
+                USDC
+              </td>
               <td className="p-2">{400}</td>
             </tr>
           </tbody>
