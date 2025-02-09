@@ -1,9 +1,10 @@
-import { describe, expect, test, vi } from "vitest";
+import { beforeAll, describe, expect, test, vi } from "vitest";
 import { addPolicies } from "./addPolicies";
+import { SCHEMA_ID } from "./fixture";
 
 describe("post obj to schema", () => {
+
 	test("should return array of uploaded record ids", async () => {
-		const SCHEMA_ID = "8e21e686-17ab-4507-a530-edcab0b5416a";
 
 		const data = [
 			{

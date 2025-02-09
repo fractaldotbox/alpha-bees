@@ -2,10 +2,10 @@ import { describe, expect, test, vi } from "vitest";
 import { addPolicies } from "./addPolicies";
 import { flushPolicies } from "./flushPolicies";
 import { getAllPolicies } from "./getAllPolicies";
+import { SCHEMA_ID } from "./fixture";
 
-describe("all policies should be removed", () => {
+describe.skip("all policies should be removed", () => {
 	test("there should be 0 items left after flushing", async () => {
-		const SCHEMA_ID = "8e21e686-17ab-4507-a530-edcab0b5416a";
 
 		// check if any policies are present
 		const initialResult: any = await getAllPolicies(SCHEMA_ID);

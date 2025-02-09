@@ -1,3 +1,5 @@
+import process from "node:process";
+
 export const config = {
 	orgCredentials: {
 		secretKey: process.env.NILLION_SECRET_KEY,
