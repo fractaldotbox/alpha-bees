@@ -72,9 +72,9 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
   const defaultLayout = [
     { i: "chatAvatar", x: 0, y: 0, w: 3, h: 8, minW: 3, minH: 6 },
     // { i: "logs", x: 7, y: 0, w: 6, h: 18, minW: 6, minH: 8 },
-    { i: "positions", x: 0, y: 1, w: 6, h: 10, minW: 6, minH: 3 },
+    { i: "positions", x: 5, y: 0, w: 6, h: 10, minW: 6, minH: 3 },
     { i: "transactions", x: 0, y: 0, w: 5, h: 10, minW: 3, minH: 6 },
-    { i: "fund", x: 2, y: 2, w: 5, h: 10, minW: 3, minH: 6 },
+    { i: "fund", x: 10, y: 2, w: 5, h: 10, minW: 3, minH: 6 },
     // {i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
   ];
 
@@ -194,9 +194,9 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
                     <TransactionsWidget address={address as `0x${string}`} />,
                   )}
                 </div>
-                <div key="logs" className="p-2">
+                {/* <div key="logs" className="p-2">
                   {renderWidget("logs", "Logs", <LogsWidget />)}
-                </div>
+                </div> */}
                 {/* <div key="fund" className="p-2">
                   {renderWidget(
                     "fund",
