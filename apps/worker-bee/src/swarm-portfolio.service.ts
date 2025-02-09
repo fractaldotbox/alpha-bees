@@ -73,7 +73,7 @@ class SwarmPortfolioService {
 
 		const event$ = fromEvent(emitter, "transaction");
 
-		console.log("start listenToTransactions");
+		console.log("start listen to swarm portfolio");
 		this.#alchemy.ws.on(
 			{
 				method: AlchemySubscription.MINED_TRANSACTIONS,

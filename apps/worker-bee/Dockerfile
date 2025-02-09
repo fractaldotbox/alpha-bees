@@ -1,4 +1,6 @@
-FROM node:18-alpine
+FROM node:22-alpine
+
+RUN apk add --no-cache git
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
@@ -12,9 +14,8 @@ USER node
 
 COPY --chown=node:node . .
 
-RUN npm install
-
-
+# from npm i --package-lock-only --omit=optional
+RUN npm i
 
 EXPOSE 8080
 
