@@ -5,7 +5,6 @@ import ChatWidget from "../components/ChatWidget";
 import MarketChart from "../components/MarketChart";
 import Navbar from "../components/Navbar.js";
 import Portfolio from "../components/Portfolio";
-import { Providers } from "@/components/Providers";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -14,7 +13,7 @@ const DashboardLayout = () => {
 
   // Default layout for grid items when not expanded.
   const defaultLayout = [
-    { i: "chatAvatar", x: 0, y: 0, w: 3, h: 12, minW: 3, minH: 6 },
+    { i: "chatAvatar", x: 0, y: 0, w: 3, h: 12, minW: 3, minH: 12 },
     { i: "marketChart", x: 3, y: 0, w: 4, h: 10, minW: 3, minH: 6 },
     { i: "chat", x: 7, y: 0, w: 4.5, h: 18, minW: 6, minH: 8 },
     // { i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
