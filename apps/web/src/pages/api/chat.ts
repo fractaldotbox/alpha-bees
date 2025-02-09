@@ -41,6 +41,7 @@ type Response = {
 // https://github.com/langchain-ai/langchain/issues/28895
 const llm = new ChatOpenAI({
   model: "gpt-4o",
+  temperature: 0.1,
   openAIApiKey: import.meta.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY,
 });
 

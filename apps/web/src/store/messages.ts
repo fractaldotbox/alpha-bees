@@ -13,7 +13,7 @@ export type Message = {
 const $messages = atom<Message[]>([
 	{
 		sender: "agent",
-		text: "Hello, I am your αBees Trading Agent. How can I assist you today?",
+		text: "Hello, I am your 🐝αBees Trading Agent. How can I assist you today?",
 	},
 ]);
 

@@ -41,7 +41,7 @@ const Chatbot = () => {
 						className="w-10 h-10 mr-2 filter brightness-110"
 					/>
 					<h1 className="font-bold text-2xl text-yellow-200">
-						αBees <span className="ml-1">🤖🐝</span>
+						🐝αBees <span className="ml-1">🤖🐝</span>
 					</h1>
 				</div>
 				<nav className="space-x-4">
