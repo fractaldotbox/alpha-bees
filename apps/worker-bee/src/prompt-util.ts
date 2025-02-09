@@ -23,4 +23,19 @@ export const createAddressbookPrompt = (networkId: string) => {
 	return prompt;
 };
 
-export const createPolicyPrompt = () => {};
+export const createPolicyPrompt = (policyRecords: {
+	_id: string;
+	policy: string;
+	priority: bigint
+}[]) => {
+
+	const base = "Act accord to the policy below. Policy:" +
+		"(Top takes precedence)";
+	// TODO fix priority sort
+	const policies = policyRecords.map((record) => {
+		return record.policy || ''
+	}).join('\n');
+
+
+	return base + policies;
+};

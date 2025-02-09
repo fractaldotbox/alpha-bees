@@ -26,7 +26,7 @@ import {
 
 import { expand, fromEvent, interval, of, race, repeat, take } from "rxjs";
 import { getAllRecords } from "./nillion";
-import { createAddressbookPrompt, createPortfolioPrompt } from "./prompt-util";
+import { createAddressbookPrompt, createPolicyPrompt, createPortfolioPrompt } from "./prompt-util";
 import SwarmPortfolioService from "./swarm-portfolio.service";
 import "reflect-metadata";
 import { z } from "zod";
@@ -123,7 +123,7 @@ export async function initializeAgent() {
 			aaveAction.getActions(walletProvider).map((action) => ({
 				...action,
 				invoke: async (walletProvider, args: any) => {
-					console.log("custom action provider", args, action.name);
+					// console.log("custom action provider", args, action.name);
 					if (action.name === "AaveActionProvider_supply") {
 						return await aaveAction.supply(walletProvider, args);
 					} else if (action.name === "AaveActionProvider_withdraw") {
@@ -135,7 +135,7 @@ export async function initializeAgent() {
 		);
 
 		// @ts-ignore
-		// await aaveAction.approveAll(walletProvider);
+		await aaveAction.approveAll(walletProvider);
 
 		const actionProviders = [
 			wethActionProvider(),
@@ -182,8 +182,7 @@ export async function initializeAgent() {
         encourage them to implement it themselves using the CDP SDK + Agentkit, recommend they go to 
         docs.cdp.coinbase.com for more information. Be concise and helpful with your responses. Refrain from 
         restating your tools' descriptions unless it is explicitly requested.
-        ` + `Fund yourself using the faucet as a start`,
-			// + `Never use faucet and request_faucet_funds action.`,
+        ` + `Never use faucet and request_faucet_funds action.`,
 		});
 
 		return { agent, config: agentConfig, walletProvider };
@@ -212,7 +211,6 @@ export async function runAutonomousMode(
 
 	console.log("Retrieved Policy from the Queen:", nillionPolicies);
 	console.log("--------");
-	// TODO load policy from ipfs
 
 	const swarmAddresses = [
 		...new Set([
@@ -265,15 +263,7 @@ export async function runAutonomousMode(
 					"Do not deploy any ERC20, NFT" +
 					createAddressbookPrompt(config.networkId) +
 					"Choose an action or set of actions and execute it that highlights your abilities." +
-					// TODO system prompt
-					// load policy from nillion
-					"Act accord to the policy below. Policy:" +
-					"(Top takes precedence)" +
-					"you should take advantage of higher yield. If yield is higher at your responsible market, supply more." +
-					"You can only supply your own wallet balance, but not control wallet balance of others in the portfolio " +
-					"Avoid supplying more than 90% of your total USDC balance" +
-					"Avoid supplying more than 40% of total swarm portofolio value at all time" +
-					"Avoid supplying more than 10n at a time";
+					createPolicyPrompt(nillionPolicies);
 
 				const stream = await agent.stream(
 					{ messages: [new HumanMessage(thought)] },
