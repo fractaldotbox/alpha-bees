@@ -2,6 +2,12 @@ import { useStore } from "@nanostores/react";
 import React from "react";
 import { $messages } from "../store/messages";
 import { YieldHistoricalChart } from "./YieldHistoricalChart";
+import { Alchemy, Network } from "alchemy-sdk";
+
+const alchemy = new Alchemy({
+  apiKey: import.meta.env.PUBLIC_ALCHEMY_API_KEY,
+  network: Network.BASE_SEPOLIA,
+});
 
 export const invokeApi = async (endpoint: string, body?: any) => {
   return fetch(endpoint, {
@@ -18,12 +24,40 @@ export const getTxnsByFilter = async ({
   filter,
   type,
   method,
+  address,
 }: {
   filter?: string;
   type?: string[];
   method?: string;
   chainId?: number;
+  address?: string;
 }) => {
+  if (address) {
+    try {
+      const txns = await alchemy.core.getAssetTransfers({
+        fromBlock: "0x0",
+        fromAddress: address,
+        category: ["external", "erc20", "erc721", "erc1155"],
+      });
+
+      // Transform Alchemy response to match existing format
+      return {
+        items: txns.transfers.map((tx: any) => ({
+          hash: tx.hash,
+          method: tx.category,
+          status: "ok", // Alchemy doesn't provide status directly
+          from: { hash: tx.from },
+          to: { hash: tx.to },
+          value: tx.value,
+        })),
+      };
+    } catch (error) {
+      console.error("Alchemy API error:", error);
+      throw error;
+    }
+  }
+
+  // Fallback to original Blockscout API if no address provided
   const queryString = new URLSearchParams({
     ...(filter && { filter }),
     ...(method && { method }),
@@ -45,9 +79,10 @@ const TransactionsWidget = ({ address }: { address: string }) => {
           filter: "contract_call",
           method: "supply,withdraw",
           type: ["validated"],
+          address: address,
         });
         console.log(response);
-        setTransactions(response.items.slice(0, 3) || []);
+        setTransactions(response.items || []);
       } catch (error) {
         console.error("Failed to fetch transactions:", error);
         setTransactions([]);
@@ -98,7 +133,7 @@ const TransactionsWidget = ({ address }: { address: string }) => {
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-800 font-mono"
                 >
-                  {tx.method}
+                  supply
                 </a>
               </td>
               <td className="p-4 font-mono">
