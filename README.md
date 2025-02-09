@@ -1,5 +1,5 @@
 # 🐝αBees
-![alt text](image.png)
+![alt text](alpha-bees.png)
 
 # Short description
 
@@ -29,7 +29,7 @@ This design help us to interact with agent on reasoning model to formulate strat
 - Base on CDP agentkit and We've implemented our own [https://github.com/coinbase/agentkit/issues/323](Aave v3 Action Provider)
 - Agents are deployed on [Autonome](https://dev.autonome.fun/) with [Live UI demo](https://alpha-bees.onrender.com)
 
-![alt text](image-2.png)
+![alt text](architecture.png)
 
 
 ### Hive Component - Strategy formulation
