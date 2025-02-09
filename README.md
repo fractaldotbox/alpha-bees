@@ -27,10 +27,11 @@ While staying safe and private
 
 ## Architecture
 
-
 We decoupled "Hive" and "Garden", responsible for strategy and execution respectively
 This design help us to interact with agent on reasoning model to formulate strategy and data pipelines, while achieve low latency, private execution with agents on isolated wallets guardrails.
 
+- Base on CDP agentkit and We've implemented our own [https://github.com/coinbase/agentkit/issues/323](Aave v3 Action Provider)
+- Agents are deployed on [Autonome](https://dev.autonome.fun/) with [Live UI demo](https://alpha-bees.onrender.com)
 
 ![alt text](image-2.png)
 
@@ -54,7 +55,7 @@ This design help us to interact with agent on reasoning model to formulate strat
   - Policies and reference signals remain encrypted until execution to prevent sandwich attacks.
 - Agents are able to generate final instructions using the policy, which is protocol-specific (e.g., staking, swapping, supplying for yield, etc.).
 - Agents evaluate on-chain portoflio of all agents. They listen to transactions from other agents and act to achieve low-latency risk management, although they don't talk directly to each other  
-- For demo purposes, perform rebalancing on Aave and Morpho
+- For demo purposes, perform rebalancing on Aave and Morpho.
 
 
 ### For visualized charts
