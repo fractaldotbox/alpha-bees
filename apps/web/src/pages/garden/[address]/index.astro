@@ -2,11 +2,12 @@
 import "../../../styles/global.css";
 import GardenLayout from "../../../layouts/GardenLayout.tsx";
 import Layout from "../../../layouts/Layout.astro";
-import Chatbot from "../../components/Chatbot.jsx";
-import Welcome from "../../components/Welcome.astro";
+
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+
+const { address } = Astro.params;
 ---
 
 
@@ -18,7 +19,7 @@ import Welcome from "../../components/Welcome.astro";
   </head>
   <body>
   <Layout>
-      <GardenLayout client:load />
+      <GardenLayout client:only="react" address={address} />
   </Layout>
   </body>
 </html>

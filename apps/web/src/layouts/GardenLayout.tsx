@@ -1,17 +1,17 @@
 import LogsWidget from "@/components/LogsWidget";
-import Position from "@/components/Positions";
 import PositionsWidget from "@/components/Positions";
 import Sidebar from "@/components/Sidebar";
 import TransactionsWidget from "@/components/Transactions";
 import WorkerBeeAvatarWidget from "@/components/WorkerBeeAvatarWidget";
-import React, { useEffect, useState } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import ChatAvatarWidget from "../components/ChatAvatarWidget";
 import ChatWidget from "../components/ChatWidget";
-import MarketChart from "../components/MarketChart";
 import Navbar from "../components/Navbar.js";
 import Portfolio from "../components/Portfolio";
 import { Providers } from "@/components/Providers";
+import { Fund } from "@/components/Fund";
+import { baseSepolia } from "wagmi/chains";
+import { useEffect, useState } from "react";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -26,8 +26,48 @@ const addresses = [
   "0x6B608C852850234d42e0C87db86C491A972E3E01",
 ] as `0x${string}`[];
 
-const GardenLayout = () => {
-  const [expandedWidget, setExpandedWidget] = useState(null);
+// Add props interface
+interface GardenLayoutProps {
+  address?: string;
+}
+
+// SVG icons for expand and collapse actions.
+const ExpandIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M12 4v16m8-8H4"
+    />
+  </svg>
+);
+
+const CollapseIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M20 12H4"
+    />
+  </svg>
+);
+
+const GardenLayout = ({ address }: GardenLayoutProps) => {
+  const [expandedWidget, setExpandedWidget] = useState<string | null>(null);
 
   const [isDataReady, setIsDataReady] = useState<boolean>(false);
   // Default layout for grid items when not expanded.
@@ -36,6 +76,7 @@ const GardenLayout = () => {
     { i: "logs", x: 7, y: 0, w: 6, h: 18, minW: 6, minH: 8 },
     { i: "positions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 6 },
     { i: "transactions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 6 },
+    { i: "fund", x: 2, y: 8, w: 5, h: 10, minW: 3, minH: 6 },
     // {i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
   ];
 
@@ -44,43 +85,12 @@ const GardenLayout = () => {
     setIsDataReady(true);
   }, []);
 
-  // SVG icons for expand and collapse actions.
-  const ExpandIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 4v16m8-8H4"
-      />
-    </svg>
-  );
-
-  const CollapseIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M20 12H4"
-      />
-    </svg>
-  );
-
   // Widget container with header (includes draggable handle with an expand/collapse button)
-  const renderWidget = (id, title, children) => {
+  const renderWidget = (
+    id: string,
+    title: string,
+    children: React.ReactNode,
+  ) => {
     return (
       <div className="bg-gray-900 border border-yellow-500 rounded-md shadow-md p-4 flex flex-col h-full">
         <div className="widget-header cursor-move flex justify-between items-center mb-2 border-b border-yellow-500 pb-1 px-2">
@@ -122,12 +132,21 @@ const GardenLayout = () => {
     } else if (expandedWidget === "portfolio") {
       widgetContent = <Portfolio />;
       widgetTitle = "Portfolio";
+    } else if (expandedWidget === "fund") {
+      widgetContent = (
+        <Fund
+          recipientAddress={address as `0x${string}`}
+          chain={baseSepolia}
+          token="ETH"
+        />
+      );
+      widgetTitle = "Fund";
     }
     return (
       <div className="h-screen bg-gray-900">
         <Navbar />
         <div className="p-4">
-          {renderWidget(expandedWidget, widgetTitle, widgetContent)}
+          {renderWidget(expandedWidget, widgetTitle as string, widgetContent)}
         </div>
       </div>
     );
@@ -175,6 +194,17 @@ const GardenLayout = () => {
                 <div key="logs" className="p-2">
                   {renderWidget("logs", "Logs", <LogsWidget />)}
                 </div>
+                <div key="fund" className="p-2">
+                  {renderWidget(
+                    "fund",
+                    "Fund",
+                    <Fund
+                      recipientAddress={address as `0x${string}`}
+                      chain={baseSepolia}
+                      token="ETH"
+                    />,
+                  )}
+                </div>
                 {/* Uncomment if needed.
                         <div key="chat" className="p-2">
                             {renderWidget("chat", "Chat", <ChatWidget />)}
@@ -189,10 +219,11 @@ const GardenLayout = () => {
   );
 };
 
-const GardenLayoutWithProviders = () => {
+// Update the wrapper component
+const GardenLayoutWithProviders = ({ address }: GardenLayoutProps) => {
   return (
     <Providers>
-      <GardenLayout />
+      <GardenLayout address={address} />
     </Providers>
   );
 };
