@@ -4,7 +4,7 @@ import { postSchema } from "./postSchema";
 describe("postSchema", () => {
 	test("should return a schema ID", async () => {
 		const result = await postSchema();
-		console.log('schemaId', result)
+		console.log("schemaId", result);
 		// if the schema ID is returned and it's uuidv4, then the test passes
 		expect(result).toBeDefined();
 		expect(result).toMatch(

@@ -1,9 +1,7 @@
 import { SecretVaultWrapper } from "nillion-sv-wrappers";
 import { config } from "./config";
 
-export const flushPolicies = async (
-	schemaId: any,
-) => {
+export const flushPolicies = async (schemaId: any) => {
 	const collection = new SecretVaultWrapper(
 		config.nodes,
 		config.orgCredentials,
@@ -16,5 +14,4 @@ export const flushPolicies = async (
 	console.log(result);
 
 	return result;
-
 };

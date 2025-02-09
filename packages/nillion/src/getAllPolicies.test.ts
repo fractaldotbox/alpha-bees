@@ -1,28 +1,30 @@
 import { beforeAll, describe, expect, test, vi } from "vitest";
-import { getAllPolicies } from "./getAllPolicies";
-import { SCHEMA_ID } from "./fixture";
 import { addPolicies } from "./addPolicies";
+import { SCHEMA_ID } from "./fixture";
+import { getAllPolicies } from "./getAllPolicies";
 
 describe("get obj", () => {
 	// TODO separate vault from flush test
 
 	beforeAll(async () => {
-		const data = [{
-			policy: {
-				$allot: "Avoid supplying more than 10n at a time",
+		const data = [
+			{
+				policy: {
+					$allot: "Avoid supplying more than 10n at a time",
+				},
+				priority: {
+					$allot: 5,
+				},
 			},
-			priority: {
-				$allot: 5,
-			},
-		}]
+		];
+
 		const results: any = await addPolicies(data, SCHEMA_ID);
-		console.log('added', results)
-	})
+		console.log("added", results);
+	});
 
 	test("should return >0 objects", async () => {
-
 		const result: any = await getAllPolicies(SCHEMA_ID);
-		console.log('policies', result)
+		console.log("policies", result);
 		expect(result).toBeDefined();
 		expect(result).toBeInstanceOf(Array);
 		expect(result.length).toBeGreaterThan(0);

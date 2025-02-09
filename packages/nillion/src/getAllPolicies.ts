@@ -1,10 +1,7 @@
 import { SecretVaultWrapper } from "nillion-sv-wrappers";
 import { config } from "./config";
 
-export const getAllPolicies = async (
-	schemaId: any
-) => {
-
+export const getAllPolicies = async (schemaId: any) => {
 	const collection = new SecretVaultWrapper(
 		config.nodes,
 		config.orgCredentials,
@@ -15,5 +12,4 @@ export const getAllPolicies = async (
 	const decryptedCollectionData = await collection.readFromNodes({});
 
 	return decryptedCollectionData;
-
 };

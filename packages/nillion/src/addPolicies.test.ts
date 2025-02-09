@@ -3,9 +3,7 @@ import { addPolicies } from "./addPolicies";
 import { SCHEMA_ID } from "./fixture";
 
 describe("post obj to schema", () => {
-
 	test("should return array of uploaded record ids", async () => {
-
 		const data = [
 			{
 				policy: {

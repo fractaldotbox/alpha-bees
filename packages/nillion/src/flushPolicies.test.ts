@@ -1,12 +1,11 @@
 import { describe, expect, test, vi } from "vitest";
 import { addPolicies } from "./addPolicies";
+import { SCHEMA_ID } from "./fixture";
 import { flushPolicies } from "./flushPolicies";
 import { getAllPolicies } from "./getAllPolicies";
-import { SCHEMA_ID } from "./fixture";
 
 describe.skip("all policies should be removed", () => {
 	test("there should be 0 items left after flushing", async () => {
-
 		// check if any policies are present
 		const initialResult: any = await getAllPolicies(SCHEMA_ID);
 		if (initialResult.length === 0) {
