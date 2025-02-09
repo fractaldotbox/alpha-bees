@@ -8,9 +8,7 @@ import ChatAvatarWidget from "../components/ChatAvatarWidget";
 import ChatWidget from "../components/ChatWidget";
 import Navbar from "../components/Navbar.js";
 import Portfolio from "../components/Portfolio";
-import { Providers } from "@/components/Providers";
 import { Fund } from "@/components/Fund";
-import { baseSepolia } from "wagmi/chains";
 import { useEffect, useState } from "react";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -74,7 +72,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
   const defaultLayout = [
     { i: "chatAvatar", x: 0, y: 0, w: 3, h: 8, minW: 3, minH: 6 },
     { i: "logs", x: 7, y: 0, w: 6, h: 18, minW: 6, minH: 8 },
-    { i: "positions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 6 },
+    { i: "positions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 3 },
     { i: "transactions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 6 },
     { i: "fund", x: 2, y: 8, w: 5, h: 10, minW: 3, minH: 6 },
     // {i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
@@ -105,7 +103,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
             {expandedWidget === id ? <CollapseIcon /> : <ExpandIcon />}
           </button>
         </div>
-        <div className="flex-1 overflow-auto">{children}</div>
+        <div className="flex-1 overflow-auto bg-white">{children}</div>
       </div>
     );
   };
@@ -121,10 +119,13 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
       widgetContent = <ChatAvatarWidget />;
       widgetTitle = "Worker";
     } else if (expandedWidget === "transactions") {
-      widgetContent = <TransactionsWidget />;
+      widgetContent = <TransactionsWidget address={address as `0x${string}`} />;
       widgetTitle = "Transactions";
-    } else if (expandedWidget === "marketChart") {
-      widgetContent = <PositionsWidget />;
+    } else if (expandedWidget === "positions") {
+      widgetTitle = "Positions";
+      widgetContent = (
+        <PositionsWidget walletAddress={address as `0x${string}`} />
+      );
       widgetTitle = "Positions";
     } else if (expandedWidget === "logs") {
       widgetContent = <LogsWidget />;
@@ -176,13 +177,19 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
                   )}
                 </div>
                 <div key="positions" className="p-2">
-                  {renderWidget("positions", "Positions", <PositionsWidget />)}
+                  {renderWidget(
+                    "positions",
+                    "Positions",
+                    <PositionsWidget
+                      walletAddress={address as `0x${string}`}
+                    />,
+                  )}
                 </div>
                 <div key="transactions" className="p-2">
                   {renderWidget(
                     "transactions",
                     "Transactions",
-                    <TransactionsWidget />,
+                    <TransactionsWidget address={address as `0x${string}`} />,
                   )}
                 </div>
                 <div key="logs" className="p-2">
