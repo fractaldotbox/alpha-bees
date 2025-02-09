@@ -105,7 +105,7 @@ const responseSchema = z.object({
     .nullable(),
 });
 
-const responseFormatterTool = tool(async () => {}, {
+const responseFormatterTool = tool(async () => { }, {
   name: "responseFormatter",
   description: "Format the LLM response into a JSON object",
   schema: responseSchema,
