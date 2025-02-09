@@ -5,11 +5,8 @@ import { z } from "zod";
  */
 // TODO uuid
 export const GetRecordSchema = z
-    .object({
-        schemaId: z
-            .string()
-            .describe("The schema id to use"),
-
-    })
-    .strip()
-    .describe("Instructions for get scret from nillion vault");
+	.object({
+		schemaId: z.string().describe("The schema id to use"),
+	})
+	.strip()
+	.describe("Instructions for get scret from nillion vault");

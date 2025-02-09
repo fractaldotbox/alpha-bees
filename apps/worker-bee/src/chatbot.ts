@@ -1,6 +1,6 @@
 import * as markets from "@bgd-labs/aave-address-book";
 import {
-	ActionProvider,
+	type ActionProvider,
 	AgentKit,
 	CdpWalletProvider,
 	type EvmWalletProvider,
@@ -25,13 +25,13 @@ import {
 } from "./agentkit/action-providers/aave/aaveActionProvider";
 
 import { expand, fromEvent, interval, of, race, repeat, take } from "rxjs";
+import { getAllRecords } from "./nillion";
 import { createAddressbookPrompt, createPortfolioPrompt } from "./prompt-util";
 import SwarmPortfolioService from "./swarm-portfolio.service";
-import { getAllRecords } from "./nillion";
 import "reflect-metadata";
 import { z } from "zod";
 import { SupplySchema } from "./agentkit/action-providers/aave/schemas";
-const NILLION_POLICY_SCHEMA_ID = '9d03997d-2200-452d-87f9-92d4728ea93e';
+const NILLION_POLICY_SCHEMA_ID = "9d03997d-2200-452d-87f9-92d4728ea93e";
 
 // @ts-ignore
 BigInt.prototype.toJSON = function () {
@@ -109,8 +109,8 @@ export async function initializeAgent() {
 			networkId: process.env.NETWORK_ID || "base-sepolia",
 		};
 
-		const MORPHO_ACTION_ON = process.env.MORPHO_ACTION_ON === 'true' || false;
-		const AAVE_ACTION_ON = process.env.AAVE_ACTION_ON === 'true' || true;
+		const MORPHO_ACTION_ON = process.env.MORPHO_ACTION_ON === "true" || false;
+		const AAVE_ACTION_ON = process.env.AAVE_ACTION_ON === "true" || true;
 
 		const aaveAction = aaveActionProvider();
 
@@ -120,41 +120,19 @@ export async function initializeAgent() {
 		// recreate those actions
 
 		const customAaveAction = customActionProvider<EvmWalletProvider>(
-
-			aaveAction.getActions(walletProvider).map(
-				(action) => ({
-					...action,
-					invoke: async (walletProvider, args: any) => {
-						console.log('custom action provider', args, action.name)
-						if (action.name === 'AaveActionProvider_supply') {
-							return await aaveAction.supply(walletProvider, args);
-						} else if (action.name === 'AaveActionProvider_withdraw') {
-							return await aaveAction.withdraw(walletProvider, args);
-						}
-						// return await action.invoke(args);
+			aaveAction.getActions(walletProvider).map((action) => ({
+				...action,
+				invoke: async (walletProvider, args: any) => {
+					console.log("custom action provider", args, action.name);
+					if (action.name === "AaveActionProvider_supply") {
+						return await aaveAction.supply(walletProvider, args);
+					} else if (action.name === "AaveActionProvider_withdraw") {
+						return await aaveAction.withdraw(walletProvider, args);
 					}
-
-				})
-			)
-			// 			{ // wallet types specify which providers can use this action. It can be as generic as WalletProvider or as specific as CdpWalletProvider
-			// 			name: "supply",
-			// 			description: `This tool allows supplying assets into a Aave v3 protocol market such as USDC
-
-			// It takes:
-			// - assetAddress: The address of the asset to supply
-			// - amount: The amount of assets to deposit in whole units accounted for decimal. 
-			// Important notes:
-			// - Make sure to use the exact amount provided. Do not convert units for assets for this action.
-			// - Please use a token address (example 0x4200000000000000000000000000000000000006) for the assetAddress field.`,
-			// 			schema: SupplySchema,
-			// 			invoke: async (walletProvider, args: any) => {
-			// 				// const { message } = args;
-			// 				// const signature = await walletProvider.signMessage(message);
-			// 				// return `The payload signature ${signature}`;
-			// 			},
-			// }
+					// return await action.invoke(args);
+				},
+			})),
 		);
-
 
 		// @ts-ignore
 		// await aaveAction.approveAll(walletProvider);
@@ -164,9 +142,8 @@ export async function initializeAgent() {
 			pythActionProvider(),
 			walletActionProvider(),
 			erc20ActionProvider(),
-			// AAVE_ACTION_ON && aaveAction,
-			customAaveAction,
-			// MORPHO_ACTION_ON && morphoActionProvider(),
+			AAVE_ACTION_ON && customAaveAction,
+			MORPHO_ACTION_ON && morphoActionProvider(),
 
 			// cdpApiActionProvider({
 			// 	apiKeyName: process.env.CDP_API_KEY_NAME,
@@ -196,7 +173,8 @@ export async function initializeAgent() {
 			llm,
 			tools,
 			checkpointSaver: memory,
-			messageModifier: `
+			messageModifier:
+				`
         You are a helpful agent that can interact onchain using the Coinbase Developer Platform AgentKit. You are 
         empowered to interact onchain using your tools. Before executing your first action, get the wallet details to see what network 
         you're on. If there is a 5XX (internal) HTTP error code, ask the user to try again later. If someone 
@@ -204,9 +182,7 @@ export async function initializeAgent() {
         encourage them to implement it themselves using the CDP SDK + Agentkit, recommend they go to 
         docs.cdp.coinbase.com for more information. Be concise and helpful with your responses. Refrain from 
         restating your tools' descriptions unless it is explicitly requested.
-        `
-
-				+ `Fund yourself using the faucet as a start`
+        ` + `Fund yourself using the faucet as a start`,
 			// + `Never use faucet and request_faucet_funds action.`,
 		});
 
@@ -232,11 +208,10 @@ export async function runAutonomousMode(
 ) {
 	console.log("Starting autonomous mode...");
 
-
 	const nillionPolicies = await getAllRecords(NILLION_POLICY_SCHEMA_ID);
 
-	console.log('Retrieved Policy from the Queen:', nillionPolicies);
-	console.log('--------')
+	console.log("Retrieved Policy from the Queen:", nillionPolicies);
+	console.log("--------");
 	// TODO load policy from ipfs
 
 	const swarmAddresses = [
@@ -325,7 +300,6 @@ export async function runAutonomousMode(
 async function main() {
 	try {
 		const { agent, config, walletProvider } = await initializeAgent();
-
 
 		// always run autonomous mode
 		await runAutonomousMode(agent, config, walletProvider);
