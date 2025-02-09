@@ -138,12 +138,4 @@ const DashboardLayout = () => {
   );
 };
 
-const DashboardLayoutWithProviders = () => {
-  return (
-    <Providers>
-      <DashboardLayout />
-    </Providers>
-  );
-};
-
-export default DashboardLayoutWithProviders;
+export default DashboardLayout;

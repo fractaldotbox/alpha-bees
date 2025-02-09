@@ -209,13 +209,4 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
   );
 };
 
-// Update the wrapper component
-const GardenLayoutWithProviders = ({ address }: GardenLayoutProps) => {
-  return (
-    <Providers>
-      <GardenLayout address={address} />
-    </Providers>
-  );
-};
-
-export default GardenLayoutWithProviders;
+export default GardenLayout;
