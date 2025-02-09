@@ -94,6 +94,25 @@ sequenceDiagram
 ```
 
 
+
+
+```mermaid
+sequenceDiagram
+    actor User
+    User->>UI: Give me a streategy
+    UI->>gpt-4o: Read strategy from Queen
+    gpt-4o->>strategy-service: tool call fetchStrategyAdvice
+    strategy-service->>o1-mini: reasoning
+    o1-mini->>gpt-4o: reason as tool response 
+    gpt-4o->>UI: return structured final policy 
+    UI->>gpt-4o: Commit policy
+    gpt-4o->>nillion: tool call nillion
+    nillion->>nillion: write policy
+```
+
+
+
+
 # Development
 
 - Setup .env per .env.example

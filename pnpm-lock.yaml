@@ -34,7 +34,7 @@ importers:
         version: 0.3.13(@langchain/core@0.3.39)
       '@langchain/core':
         specifier: ^0.3.38
-        version: 0.3.39
+        version: 0.3.39(openai@4.83.0)
       '@langchain/langgraph':
         specifier: ^0.2.44
         version: 0.2.45(@langchain/core@0.3.39)
@@ -95,6 +95,9 @@ importers:
       nanostores:
         specifier: ^0.11.3
         version: 0.11.3
+      openai:
+        specifier: 4.83.0
+        version: 4.83.0(ws@8.18.0)(zod@3.24.1)
       postcss:
         specifier: ^8.4.35
         version: 8.5.1
@@ -157,7 +160,7 @@ importers:
         version: 0.17.0(typescript@5.7.3)(zod@3.24.1)
       '@langchain/core':
         specifier: ^0.3.19
-        version: 0.3.39
+        version: 0.3.39(openai@4.83.0)
       '@langchain/langgraph':
         specifier: ^0.2.21
         version: 0.2.45(@langchain/core@0.3.39)
@@ -858,7 +861,7 @@ packages:
     dependencies:
       '@coinbase/agentkit': 0.1.2(typescript@5.7.3)
       '@coinbase/coinbase-sdk': 0.17.0(typescript@5.7.3)(zod@3.24.1)
-      '@langchain/core': 0.3.39
+      '@langchain/core': 0.3.39(openai@4.83.0)
       zod: 3.24.1
     transitivePeerDependencies:
       - bufferutil
@@ -2017,7 +2020,7 @@ packages:
       '@langchain/core': '>=0.2.21 <0.4.0'
     dependencies:
       '@anthropic-ai/sdk': 0.36.3
-      '@langchain/core': 0.3.39
+      '@langchain/core': 0.3.39(openai@4.83.0)
       fast-xml-parser: 4.5.1
       zod: 3.24.1
       zod-to-json-schema: 3.24.1(zod@3.24.1)
@@ -2025,7 +2028,7 @@ packages:
       - encoding
     dev: false
 
-  /@langchain/core@0.3.39:
+  /@langchain/core@0.3.39(openai@4.83.0):
     resolution: {integrity: sha512-muXs4asy1A7qDtcdznxqyBfxf4N6qxofY/S0c95vbsWa0r9YAE2PttHIjcuxSy1q2jUiTkpCcgFEjNJRQRVhEw==}
     engines: {node: '>=18'}
     dependencies:
@@ -2034,7 +2037,7 @@ packages:
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.18
-      langsmith: 0.3.7
+      langsmith: 0.3.7(openai@4.83.0)
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -2051,7 +2054,7 @@ packages:
     peerDependencies:
       '@langchain/core': '>=0.2.31 <0.4.0'
     dependencies:
-      '@langchain/core': 0.3.39
+      '@langchain/core': 0.3.39(openai@4.83.0)
       uuid: 10.0.0
     dev: false
 
@@ -2070,7 +2073,7 @@ packages:
     peerDependencies:
       '@langchain/core': '>=0.2.36 <0.3.0 || >=0.3.9 < 0.4.0'
     dependencies:
-      '@langchain/core': 0.3.39
+      '@langchain/core': 0.3.39(openai@4.83.0)
       '@langchain/langgraph-checkpoint': 0.0.15(@langchain/core@0.3.39)
       '@langchain/langgraph-sdk': 0.0.37
       uuid: 10.0.0
@@ -2083,7 +2086,7 @@ packages:
     peerDependencies:
       '@langchain/core': '>=0.3.29 <0.4.0'
     dependencies:
-      '@langchain/core': 0.3.39
+      '@langchain/core': 0.3.39(openai@4.83.0)
       js-tiktoken: 1.0.18
       openai: 4.83.0(ws@8.18.0)(zod@3.24.1)
       zod: 3.24.1
@@ -2099,7 +2102,7 @@ packages:
     peerDependencies:
       '@langchain/core': '>=0.3.39 <0.4.0'
     dependencies:
-      '@langchain/core': 0.3.39
+      '@langchain/core': 0.3.39(openai@4.83.0)
       js-tiktoken: 1.0.18
       openai: 4.83.0(ws@8.18.0)(zod@3.24.1)
       zod: 3.24.1
@@ -6434,7 +6437,7 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /langsmith@0.3.7:
+  /langsmith@0.3.7(openai@4.83.0):
     resolution: {integrity: sha512-wakN1hxGkm1JR2PpAV7fiT7oC99LKcgxiuUrYGZWPbuj7Y8EPF19F7VNr4B+hA219bfaeWTa4Lxy2YrtPSKnQA==}
     peerDependencies:
       openai: '*'
@@ -6445,6 +6448,7 @@ packages:
       '@types/uuid': 10.0.0
       chalk: 4.1.2
       console-table-printer: 2.12.1
+      openai: 4.83.0(ws@8.18.0)(zod@3.24.1)
       p-queue: 6.6.2
       p-retry: 4.6.2
       semver: 7.7.1

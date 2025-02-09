@@ -5,6 +5,7 @@ import { $messages, type Message, setMessages } from "../store/messages";
 import AgentAvatar from "./AgentAvatar";
 import ChatBubble from "./ChatBubble";
 
+
 const ChatWidget = () => {
 	const messages = useStore($messages);
 
@@ -29,10 +30,10 @@ const ChatWidget = () => {
 			});
 			const data = await response.json();
 
-			console.log(data);
+			console.log('response', data);
 
 			// quick fix, TODO propely parse output
-			const text = data.kwargs.content;
+			const text = data?.kwargs?.content || data.text;
 
 			setMessages([
 				...messages,
@@ -44,7 +45,7 @@ const ChatWidget = () => {
 				},
 			]);
 		} catch (error) {
-			console.error(error);
+			console.log('error', error);
 			setMessages([
 				...messages,
 				{ sender: "agent", text: "Error retrieving response." },
