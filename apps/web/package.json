@@ -29,6 +29,7 @@
 		"@radix-ui/react-tooltip": "^1.1.8",
 		"@types/react": "^19.0.8",
 		"@types/react-dom": "^19.0.3",
+		"alchemy-sdk": "^3.5.2",
 		"astro": "^5.2.5",
 		"autoprefixer": "^10.4.17",
 		"class-variance-authority": "^0.7.1",
