@@ -5,7 +5,6 @@ import { $messages, type Message, setMessages } from "../store/messages";
 import AgentAvatar from "./AgentAvatar";
 import ChatBubble from "./ChatBubble";
 
-
 const ChatWidget = () => {
 	const messages = useStore($messages);
 
@@ -30,7 +29,7 @@ const ChatWidget = () => {
 			});
 			const data = await response.json();
 
-			console.log('response', data);
+			console.log("response", data);
 
 			// quick fix, TODO propely parse output
 			const text = data?.kwargs?.content || data.text;
@@ -45,7 +44,7 @@ const ChatWidget = () => {
 				},
 			]);
 		} catch (error) {
-			console.log('error', error);
+			console.log("error", error);
 			setMessages([
 				...messages,
 				{ sender: "agent", text: "Error retrieving response." },
@@ -62,15 +61,20 @@ const ChatWidget = () => {
 				{messages.map((msg, index) => (
 					<div
 						key={index}
-						className={`grid items-start gap-4 ${msg.sender === "agent"
-							? "grid-cols-[max-content,1fr]"
-							: "grid-cols-[1fr,max-content]"
-							}`}
+						className={`grid items-start gap-4 ${
+							msg.sender === "agent"
+								? "grid-cols-[max-content,1fr]"
+								: "grid-cols-[1fr,max-content]"
+						}`}
 					>
 						<ChatBubble message={msg.text} sender={msg.sender} />
 					</div>
 				))}
-				{loading && <div className="text-yellow-300">Let me think slowly and clearly...</div>}
+				{loading && (
+					<div className="text-yellow-300">
+						Let me think slowly and clearly...
+					</div>
+				)}
 			</div>
 
 			{/* Input Form */}

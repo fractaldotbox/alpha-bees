@@ -53,14 +53,12 @@ const fetchPoolListFromDefiLlama = tool(
 	},
 );
 
-
 const fetchStrategyAdvice = tool(
 	async (poolId: string) => {
-		console.log('tool')
+		console.log("tool");
 		const response = await createStartegy();
 
 		console.log(response?.choices[0]?.message);
-
 
 		// TODO parsing
 		return response?.choices[0]?.message;
@@ -74,7 +72,6 @@ const fetchStrategyAdvice = tool(
 		}) as any,
 	},
 );
-
 
 const fetchPoolTimeSeriesFromId = tool(
 	async (poolId: string) => {
@@ -102,7 +99,7 @@ const responseSchema = z.object({
 		.nullable(),
 });
 
-const responseFormatterTool = tool(async () => { }, {
+const responseFormatterTool = tool(async () => {}, {
 	name: "responseFormatter",
 	description: "Format the LLM response into a JSON object",
 	schema: responseSchema,
@@ -124,7 +121,7 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 		const llmWithTools = llm.bindTools([
 			// fetchPoolListFromDefiLlama,
 			// fetchPoolTimeSeriesFromId,
-			fetchStrategyAdvice
+			fetchStrategyAdvice,
 		]);
 
 		const messages = [
@@ -143,7 +140,7 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 				if (tool) {
 					const toolResult = await tool.invoke(toolCall);
 
-					console.log('tool result', toolResult)
+					console.log("tool result", toolResult);
 					// Add tool result as a message
 					messages.push(
 						new SystemMessage({
@@ -162,7 +159,7 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 				.withStructuredOutput(responseSchema)
 				.invoke(messages);
 
-			console.log(finalResponse)
+			console.log(finalResponse);
 			return new Response(JSON.stringify(finalResponse), {
 				status: 200,
 				headers: { "Content-Type": "application/json" },
