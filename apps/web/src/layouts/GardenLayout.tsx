@@ -122,7 +122,9 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
       widgetContent = <TransactionsWidget />;
       widgetTitle = "Transactions";
     } else if (expandedWidget === "marketChart") {
-      widgetContent = <PositionsWidget />;
+      widgetContent = (
+        <PositionsWidget walletAddress={address as `0x${string}`} />
+      );
       widgetTitle = "Positions";
     } else if (expandedWidget === "logs") {
       widgetContent = <LogsWidget />;
@@ -174,7 +176,13 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
                   )}
                 </div>
                 <div key="positions" className="p-2">
-                  {renderWidget("positions", "Positions", <PositionsWidget />)}
+                  {renderWidget(
+                    "positions",
+                    "Positions",
+                    <PositionsWidget
+                      walletAddress={address as `0x${string}`}
+                    />,
+                  )}
                 </div>
                 <div key="transactions" className="p-2">
                   {renderWidget(
