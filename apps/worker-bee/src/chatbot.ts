@@ -26,7 +26,11 @@ import {
 
 import { expand, fromEvent, interval, of, race, repeat, take } from "rxjs";
 import { getAllRecords } from "./nillion";
-import { createAddressbookPrompt, createPolicyPrompt, createPortfolioPrompt } from "./prompt-util";
+import {
+	createAddressbookPrompt,
+	createPolicyPrompt,
+	createPortfolioPrompt,
+} from "./prompt-util";
 import SwarmPortfolioService from "./swarm-portfolio.service";
 import "reflect-metadata";
 import { z } from "zod";
@@ -88,7 +92,7 @@ export async function initializeAgent() {
 	try {
 		const agentName = process.env.AGENT_NAME || "Worker Bee";
 		console.log(`Initializing agent: ${agentName}`);
-		console.log(`network id:`, process.env.NETWORK_ID)
+		console.log(`network id:`, process.env.NETWORK_ID);
 
 		// Initialize LLM
 		const llm = new ChatOpenAI({

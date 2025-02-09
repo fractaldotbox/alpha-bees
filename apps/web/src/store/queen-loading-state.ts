@@ -5,5 +5,5 @@ export const $isQueenLoading = atom<boolean>(false);
 
 // Helper functions to update the loading state
 export const setQueenLoading = (loading: boolean) => {
-  $isQueenLoading.set(loading);
+	$isQueenLoading.set(loading);
 };

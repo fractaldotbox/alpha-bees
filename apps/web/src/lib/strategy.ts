@@ -1,27 +1,27 @@
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.OPENAI_API_KEY,
+	apiKey: import.meta.env.OPENAI_API_KEY,
 });
 
 type StrategyPrompt = {
-  text: string;
-  priority: number;
+	text: string;
+	priority: number;
 };
 
 export const createStrategy = async (
-  prompt: string,
+	prompt: string,
 ): Promise<StrategyPrompt[]> => {
-  console.log("createStrategy", { prompt });
+	console.log("createStrategy", { prompt });
 
-  const response = await openai.chat.completions.create({
-    // TODO: use o1-mini or o3 when can access
-    model: "gpt-4o-mini",
-    response_format: { type: "json_object" },
-    messages: [
-      {
-        role: "system",
-        content: `You are an AI Strategy Coordinator specializing in AAVE operations.
+	const response = await openai.chat.completions.create({
+		// TODO: use o1-mini or o3 when can access
+		model: "gpt-4o-mini",
+		response_format: { type: "json_object" },
+		messages: [
+			{
+				role: "system",
+				content: `You are an AI Strategy Coordinator specializing in AAVE operations.
 
 				Your role is to:
 				1. Convert user prompts into precise, actionable strategies.
@@ -35,23 +35,23 @@ export const createStrategy = async (
 					- "priority": number indicating the priority of the instruction
 
 				Keep responses concise and focused on execution details.`,
-      },
-      {
-        role: "user",
-        content: prompt,
-      },
-    ],
-  });
+			},
+			{
+				role: "user",
+				content: prompt,
+			},
+		],
+	});
 
-  const content = response.choices[0]?.message?.content;
-  if (!content) {
-    throw new Error("No response from OpenAI");
-  }
+	const content = response.choices[0]?.message?.content;
+	if (!content) {
+		throw new Error("No response from OpenAI");
+	}
 
-  try {
-    const strategy = JSON.parse(content) as { data: StrategyPrompt[] };
-    return strategy.data;
-  } catch (e) {
-    throw new Error("Failed to parse OpenAI response into strategy");
-  }
+	try {
+		const strategy = JSON.parse(content) as { data: StrategyPrompt[] };
+		return strategy.data;
+	} catch (e) {
+		throw new Error("Failed to parse OpenAI response into strategy");
+	}
 };
