@@ -27,11 +27,9 @@ const ChatWidget = () => {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: input, prevMessages: messages }),
       });
       const data = await response.json();
-
-      console.log("response", data);
 
       // quick fix, TODO propely parse output
       const text = data?.kwargs?.content || data.text;
@@ -91,7 +89,10 @@ const ChatWidget = () => {
         />
         <button
           type="submit"
-          className="bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-r-lg transition-colors"
+          className={`bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-r-lg transition-colors ${
+            isQueenLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={isQueenLoading}
         >
           Send
         </button>

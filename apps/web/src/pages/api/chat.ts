@@ -1,6 +1,11 @@
 import { storeToNillionVault } from "@/lib/nillion";
 import { createStrategy } from "@/lib/strategy";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import type { Message } from "@/store/messages";
+import {
+  AIMessage,
+  HumanMessage,
+  SystemMessage,
+} from "@langchain/core/messages";
 import { tool } from "@langchain/core/tools";
 import { ChatOpenAI } from "@langchain/openai";
 import type { APIRoute } from "astro";
@@ -19,12 +24,14 @@ const modifier = `
 
   If someone asks you to GENERATE OR ADVISE a strategy, you need to use the fetchStrategyAdvice tool.  You must pass in the user prompt directly to the tool. Render the response from there instead of your own responses. You need to ask to the user whether they want to commit the strategy or not
   
-  If the user wants to commit the strategy, you need to use the commitStrategy tool to commit the strategy to the strategy vault.
+  If the user wants to commit the strategy, you need to use the commitStrategy tool to commit the strategy to the strategy vault. This would mean that the worker agents will start acting upon them.
 
   If someone requests you to draw a chart, you just need to use the fetchPoolTimeSeriesFromId tool to get the time series data. Get the relevant ones that the user needs, the arguments can be obtained through the fetchPoolListFromDefiLlama tool.
   Draw charts when applicable, even if the user does not ask for it.
   Please supply the correct poolIds for the chart. You can pass in multiple poolIds if you want to draw multiple charts.
   If do have to draw a chart, do indicate the user to look at the "Market Chart" section on the screen.
+
+  Remember the user's previous messages and use them to generate the response.
 
   Be concise but clear and helpful with your responses.
   Refrain from restating your tools' descriptions unless it is explicitly requested.
@@ -132,7 +139,7 @@ const toolsByName = {
 
 export const POST: APIRoute = async ({ request }): Promise<Response> => {
   try {
-    const { message } = await request.json();
+    const { message, prevMessages } = await request.json();
 
     console.log("generating response");
 
@@ -144,6 +151,11 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 
     const messages = [
       new SystemMessage({ content: modifier }),
+      ...prevMessages.map((msg: Message) =>
+        msg.sender === "user"
+          ? new HumanMessage({ content: msg.text })
+          : new AIMessage({ content: msg.text }),
+      ),
       new HumanMessage({ content: message }),
     ];
 
