@@ -30,7 +30,7 @@ async function main() {
 	try {
 		const { agent, config, walletProvider } = await initializeAgent();
 		// always run autonomous mode
-		await runAutonomousMode(agent, config, walletProvider);
+		runAutonomousMode(agent, config, walletProvider);
 
 		fileLogger.info("Starting Server with Agent...");
 		await fastify.listen({ port: Number(PORT) });
