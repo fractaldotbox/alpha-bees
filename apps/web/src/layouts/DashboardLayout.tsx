@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import ChatAvatarWidget from "../components/ChatAvatarWidget";
 import ChatWidget from "../components/ChatWidget";
@@ -10,7 +10,7 @@ import { Providers } from "@/components/Providers";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const DashboardLayout = () => {
-  const [expandedWidget, setExpandedWidget] = useState(null);
+  const [expandedWidget, setExpandedWidget] = useState<string | null>(null);
 
   // Default layout for grid items when not expanded.
   const defaultLayout = [
@@ -56,7 +56,11 @@ const DashboardLayout = () => {
   );
 
   // Widget container with header (includes draggable handle with an expand/collapse button)
-  const renderWidget = (id, title, children) => {
+  const renderWidget = (
+    id: string,
+    title: string,
+    children: React.ReactNode,
+  ) => {
     return (
       <div className="bg-gray-900 border border-yellow-500 rounded-md shadow-md p-4 flex flex-col h-full">
         <div className="widget-header cursor-move flex justify-between items-center mb-2 border-b border-yellow-500 pb-1 px-2">
@@ -97,7 +101,7 @@ const DashboardLayout = () => {
       <div className="h-screen bg-gray-900">
         <Navbar />
         <div className="p-4">
-          {renderWidget(expandedWidget, widgetTitle, widgetContent)}
+          {renderWidget(expandedWidget, widgetTitle || "", widgetContent)}
         </div>
       </div>
     );
@@ -134,12 +138,4 @@ const DashboardLayout = () => {
   );
 };
 
-const DashboardLayoutWithProviders = () => {
-  return (
-    <Providers>
-      <DashboardLayout />
-    </Providers>
-  );
-};
-
-export default DashboardLayoutWithProviders;
+export default DashboardLayout;
