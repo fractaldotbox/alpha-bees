@@ -30,7 +30,7 @@ If someone asks you to generate a strategy or advises you on a strategy, you nee
   Refrain from restating your tools' descriptions unless it is explicitly requested.
 `;
 
-type Response = {
+type ChatResponse = {
   text: string;
   graph: {
     graphType: "yieldHistoricalGraph";
@@ -122,7 +122,7 @@ const toolsByName = {
 
 export const POST: APIRoute = async ({ request }): Promise<Response> => {
   try {
-    const { message } = await request.json<{ message: string }>();
+    const { message } = await request.json();
 
     console.log("generating response");
 
