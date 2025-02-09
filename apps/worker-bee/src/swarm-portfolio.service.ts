@@ -88,7 +88,7 @@ class SwarmPortfolioService {
 				hashesOnly: false,
 			},
 			(tx) => {
-				console.log("transaction recived, let me check our portfolio");
+				console.log("! transaction received, let me check our portfolio !");
 				console.log(tx);
 
 				emitter.dispatchEvent(new CustomEvent("transaction", { detail: tx }));
