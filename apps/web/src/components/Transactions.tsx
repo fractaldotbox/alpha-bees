@@ -9,17 +9,17 @@ const TransactionsWidget = ({ address }: { address: string }) => {
   const transactions = [
     {
       hash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-      from: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      from: address,
       status: "Success",
     },
     {
       hash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-      from: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
+      from: address,
       status: "Pending",
     },
     {
       hash: "0x7890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
-      from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      from: address,
       status: "Failed",
     },
   ];
