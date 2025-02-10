@@ -1,16 +1,29 @@
 {
-	"name": "nillion",
+	"name": "@repo/nillion",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
 	"scripts": {
+		"dev": "tsc --watch",
+		"build": "tsc",
 		"test": "vitest  --mode development"
+	},
+	"exports": {
+		".": {
+		  "types": "./src/index.ts",
+		  "default": "./dist/index.js"
+		},
+		"./*": {
+		  "types": "./src/*.ts",
+		  "default": "./dist/*.js"
+		}
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"vitest": "^3.0.5"
+		"vitest": "^3.0.5",
+		"@repo/typescript-config": "workspace:*",
+		"typescript": "5.5.4"
 	},
 	"dependencies": {
 		"nillion-sv-wrappers": "git@github.com:debuggingfuture/nillion-sv-wrappers.git"

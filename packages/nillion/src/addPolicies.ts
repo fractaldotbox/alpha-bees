@@ -1,7 +1,7 @@
 import { SecretVaultWrapper } from "nillion-sv-wrappers";
 import { config } from "./config";
 
-export const addPolicies = async (data, schemaId: any) => {
+export const addPolicies = async (data: any, schemaId: any) => {
 	const collection = new SecretVaultWrapper(
 		config.nodes,
 		config.orgCredentials,
@@ -16,9 +16,9 @@ export const addPolicies = async (data, schemaId: any) => {
 		JSON.stringify(dataWritten, null, 2),
 	);
 
-	const newIds = [
-		...new Set(dataWritten.map((item: any) => item.result.data.created).flat()),
-	];
+	const newIds = Array.from(
+		new Set(dataWritten.map((item: any) => item.result.data.created).flat())
+	);
 	console.log("uploaded record ids:", newIds);
 
 	return newIds;
