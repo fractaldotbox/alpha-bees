@@ -93,9 +93,7 @@ const fetchStrategyAdvice = tool(
 
 const commitStrategy = tool(
 	async (strategy: any) => {
-		console.log('trying to store strategy', strategy);
 		storeToNillionVault("strategy", JSON.stringify(strategy));
-		console.log('stored strategy');
 	},
 	{
 		name: "commitStrategy",
@@ -173,7 +171,6 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 		if (aiMessage.tool_calls?.length) {
 			for (const toolCall of aiMessage.tool_calls) {
 				const tool = toolsByName[toolCall.name as keyof typeof toolsByName];
-				console.log('called' + toolCall.name);
 				if (tool) {
 					const toolResult = await tool.invoke(toolCall);
 
@@ -188,8 +185,6 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 							},
 						}),
 					);
-				} else {
-					console.log('tool not found' + toolCall.name);
 				}
 			}
 
