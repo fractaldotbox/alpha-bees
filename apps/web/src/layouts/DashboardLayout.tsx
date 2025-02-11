@@ -15,7 +15,7 @@ const DashboardLayout = () => {
 	const defaultLayout = [
 		{ i: "chatAvatar", x: 0, y: 0, w: 3, h: 12, minW: 3, minH: 12 },
 		{ i: "marketChart", x: 3, y: 0, w: 4, h: 12, minW: 3, minH: 12 },
-		{ i: "chat", x: 7, y: 0, w: 4, h: 18, minW: 6, minH: 8 },
+		{ i: "chat", x: 7, y: 0, w: 5, h: 18, minW: 6, minH: 8 },
 		// { i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
 	];
 

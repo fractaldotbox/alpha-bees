@@ -4,7 +4,7 @@ import React from "react";
 
 const AgentAvatar = ({ image }: { image: { src: string } }) => {
 	return (
-		<div className="w-100 h-full mr-4 border border-yellow-500 rounded-lg flex items-center justify-center overflow-y-hidden">
+		<div className="w-100 h-full border border-yellow-500 rounded-lg flex items-center justify-center overflow-y-hidden">
 			<img
 				src={image.src}
 				alt="Agent Avatar"

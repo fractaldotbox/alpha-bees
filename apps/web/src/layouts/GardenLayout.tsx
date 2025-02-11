@@ -4,7 +4,7 @@ import PositionsWidget from "@/components/Positions";
 import Sidebar from "@/components/Sidebar";
 import TransactionsWidget from "@/components/Transactions";
 import WorkerBeeAvatarWidget from "@/components/WorkerBeeAvatarWidget";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import ChatAvatarWidget from "../components/ChatAvatarWidget";
 import ChatWidget from "../components/ChatWidget";
@@ -73,12 +73,13 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
 	const [expandedWidget, setExpandedWidget] = useState<string | null>(null);
 
 	const [isDataReady, setIsDataReady] = useState<boolean>(false);
+
 	// Default layout for grid items when not expanded.
 	const defaultLayout = [
 		{ i: "chatAvatar", x: 0, y: 0, w: 3, h: 8, minW: 3, minH: 6 },
 		// { i: "logs", x: 7, y: 0, w: 6, h: 18, minW: 6, minH: 8 },
-		{ i: "positions", x: 0, y: 1, w: 6, h: 10, minW: 6, minH: 3 },
-		{ i: "transactions", x: 0, y: 0, w: 5, h: 10, minW: 3, minH: 6 },
+		{ i: "positions", x: 3, y: 0, w: 6, h: 8, minW: 6, minH: 3 },
+		{ i: "transactions", x: 0, y: 1, w: 5, h: 10, minW: 3, minH: 6 },
 		{ i: "fund", x: 2, y: 2, w: 5, h: 10, minW: 3, minH: 6 },
 		// {i: "portfolio", x: 10, y: 0, w: 2, h: 8, minW: 4, minH: 6 },
 	];
@@ -87,6 +88,10 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
 	useEffect(() => {
 		setIsDataReady(true);
 	}, []);
+
+	const logUrl = useMemo(() => {
+		return SWARM_CONFIG[address as `0x${string}`]?.endpoint;
+	}, [address])
 
 	// Widget container with header (includes draggable handle with an expand/collapse button)
 	const renderWidget = (
@@ -121,7 +126,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
 			widgetContent = <ChatWidget />;
 			widgetTitle = "Chat";
 		} else if (expandedWidget === "chatAvatar") {
-			widgetContent = <ChatAvatarWidget />;
+			widgetContent = <WorkerBeeAvatarWidget />;
 			widgetTitle = "Worker";
 		} else if (expandedWidget === "transactions") {
 			widgetContent = <TransactionsWidget address={address as `0x${string}`} />;
@@ -134,7 +139,7 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
 			widgetTitle = "Positions";
 		} else if (expandedWidget === "logs") {
 			widgetContent = (
-				<LogsWidget url={SWARM_CONFIG[address as `0x${string}`]?.endpoint} />
+				<LogsWidget url={logUrl} />
 			);
 			widgetTitle = " Logs";
 		} else if (expandedWidget === "portfolio") {
@@ -201,9 +206,9 @@ const GardenLayout = ({ address }: GardenLayoutProps) => {
 										<TransactionsWidget address={address as `0x${string} `} />,
 									)}
 								</div>
-								<div key="logs" className="p-2">
-									{renderWidget("logs", "Logs", <LogsWidget />)}
-								</div>
+								{/* <div key="logs" className="p-2">
+									{renderWidget("logs", "Logs", <LogsWidget url={logUrl} />)}
+								</div> */}
 								{/* <div key="fund" className="p-2">
                   {renderWidget(
                     "fund",
