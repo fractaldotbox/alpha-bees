@@ -19,9 +19,11 @@ import {
 } from "@coinbase/agentkit";
 import {
 	Alchemy,
+	Utils,
 	type AlchemyMinedTransactionsAddress,
 	AlchemySubscription,
 	Network,
+	AlchemyProvider,
 } from "alchemy-sdk";
 
 import { baseSepolia, sepolia } from "viem/chains";
@@ -30,6 +32,11 @@ import { abi } from "./erc20-constants";
 interface PriceUpdate {
 	symbol: string;
 	price: number;
+}
+
+
+function getAlchemyHttpUrl(network, apiKey) {
+	return `https://${network}.g.alchemy.com/v2/${apiKey}`;
 }
 
 class SwarmPortfolioService {
@@ -48,22 +55,27 @@ class SwarmPortfolioService {
 		this.addresses = addresses;
 		const chain = NETWORK_ID_TO_VIEM_CHAIN[networkId];
 
-		this.#publicClient = createPublicClient({
-			chain,
-			transport: http(),
-		});
-
-		this.tokenAddress = tokenAddresses;
-
 		const network =
 			networkId === "sepolia" ? Network.ETH_SEPOLIA : Network.BASE_SEPOLIA;
 
-		const settings = {
+		const alchemySettings = {
 			apiKey: process.env.ALCHEMY_API_KEY, // Replace with your Alchemy API Key.
 			network,
 		};
 
-		this.#alchemy = new Alchemy(settings);
+		this.#alchemy = new Alchemy(alchemySettings);
+
+
+
+		this.#publicClient = createPublicClient({
+			chain,
+			transport: http(getAlchemyHttpUrl(network, alchemySettings.apiKey)),
+		});
+
+		this.tokenAddress = tokenAddresses;
+
+
+
 	}
 
 	listenToTransactions = (
