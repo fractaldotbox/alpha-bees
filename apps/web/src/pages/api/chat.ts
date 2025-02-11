@@ -22,9 +22,13 @@ const modifier = `
   - fetchStrategyAdvice
   - commitStrategy
 
-  If someone asks you to GENERATE OR ADVISE a strategy, you need to use the fetchStrategyAdvice tool.  You must pass in the user prompt directly to the tool. Render the response from there instead of your own responses. You need to ask to the user whether they want to commit the strategy or not
+  If someone asks you to GENERATE OR ADVISE a strategy, you need to use the fetchStrategyAdvice tool.  
+  You must pass in the user prompt directly to the tool. Render the response from there instead of your own responses. 
+  You need to ask the user to choose between fine-tuning the strategy or committing it.
   
-  If the user wants to commit the strategy, you need to use the commitStrategy tool to commit the strategy to the strategy vault. This would mean that the worker agents will start acting upon them.
+  If the user wants to commit the strategy, you need to use the commitStrategy tool to commit the strategy to the strategy vault. 
+  This would mean that the worker agents will start acting upon them. 
+  Please note that the strategy should be derived from the fetchStrategyAdvice tool.
 
   If someone requests you to draw a chart, you just need to use the fetchPoolTimeSeriesFromId tool to get the time series data. Get the relevant ones that the user needs, the arguments can be obtained through the fetchPoolListFromDefiLlama tool.
   Draw charts when applicable, even if the user does not ask for it.
@@ -135,6 +139,7 @@ const toolsByName = {
 	fetchPoolTimeSeriesFromId,
 	fetchStrategyAdvice,
 	responseFormatterTool,
+	commitStrategy,
 };
 
 export const POST: APIRoute = async ({ request }): Promise<Response> => {
@@ -147,6 +152,7 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 			fetchPoolListFromDefiLlama,
 			fetchPoolTimeSeriesFromId,
 			fetchStrategyAdvice,
+			commitStrategy,
 		]);
 
 		const messages = [
@@ -166,7 +172,6 @@ export const POST: APIRoute = async ({ request }): Promise<Response> => {
 		if (aiMessage.tool_calls?.length) {
 			for (const toolCall of aiMessage.tool_calls) {
 				const tool = toolsByName[toolCall.name as keyof typeof toolsByName];
-				console.log(toolCall.name);
 				if (tool) {
 					const toolResult = await tool.invoke(toolCall);
 
