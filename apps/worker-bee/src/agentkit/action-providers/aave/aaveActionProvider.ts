@@ -123,7 +123,7 @@ Important notes:
 			const { market, assets } = findAaveMarketAssets(networkId);
 			const asset = assets?.[args.assetAddress] as AaveAsset;
 
-			console.log("aave supply", args, parseUnits(args.amount, 0), networkId);
+			console.log(`[Aave][Supply] ${args.assetAddress} ${networkId}`, args);
 
 			const poolAddress = market.POOL;
 

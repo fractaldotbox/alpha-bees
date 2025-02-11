@@ -35,6 +35,7 @@ import SwarmPortfolioService from "./swarm-portfolio.service";
 import "reflect-metadata";
 import { z } from "zod";
 import { SupplySchema } from "./agentkit/action-providers/aave/schemas";
+import { Address } from "@coinbase/coinbase-sdk";
 const NILLION_POLICY_SCHEMA_ID = "9d03997d-2200-452d-87f9-92d4728ea93e";
 
 // @ts-ignore
@@ -219,8 +220,6 @@ export async function runAutonomousMode(
 
 	const swarmAddresses = [
 		...new Set([
-			walletProvider.getAddress(),
-
 			// sepolia ETH agent
 			"0x4A9b1ECD1297493B4EfF34652710BD1cE52c6526",
 
@@ -230,7 +229,11 @@ export async function runAutonomousMode(
 			// base-sepolia Morpho USDC agent
 			"0x6B608C852850234d42e0C87db86C491A972E3E01",
 		]),
-	] as `0x${string}`[];
+	].filter(
+		(addr: string) => {
+			return addr !== walletProvider.getAddress()
+		}
+	) as `0x${string}`[];
 
 	// eslint-disable-next-line no-constant-condition
 	const swarmPortfolioService = new SwarmPortfolioService(
