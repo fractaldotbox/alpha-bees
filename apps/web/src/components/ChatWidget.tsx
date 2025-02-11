@@ -62,11 +62,10 @@ const ChatWidget = () => {
 				{messages.map((msg, index) => (
 					<div
 						key={index}
-						className={`grid items-start gap-4 ${
-							msg.sender === "agent"
-								? "grid-cols-[max-content,1fr]"
-								: "grid-cols-[1fr,max-content]"
-						}`}
+						className={`grid items-start gap-4 ${msg.sender === "agent"
+							? "grid-cols-[max-content,1fr]"
+							: "grid-cols-[1fr,max-content]"
+							}`}
 					>
 						<ChatBubble message={msg.text} sender={msg.sender} />
 					</div>
@@ -80,18 +79,16 @@ const ChatWidget = () => {
 
 			{/* Input Form */}
 			<form onSubmit={handleSubmit} className="flex p-4">
-				<input
-					type="text"
+				<textarea
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
 					placeholder="Type your message..."
-					className="flex-1 p-2 bg-gray-800 border border-yellow-700 rounded-l-lg focus:outline-none text-white placeholder-yellow-400"
+					className="flex-1 p-2 h-[100px] bg-gray-800 border border-yellow-700 rounded-l-lg focus:outline-none text-white placeholder-yellow-400"
 				/>
 				<button
 					type="submit"
-					className={`bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-r-lg transition-colors ${
-						isQueenLoading ? "opacity-50 cursor-not-allowed" : ""
-					}`}
+					className={`bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-r-lg transition-colors ${isQueenLoading ? "opacity-50 cursor-not-allowed" : ""
+						}`}
 					disabled={isQueenLoading}
 				>
 					Send
