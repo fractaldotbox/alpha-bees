@@ -6,6 +6,10 @@
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**"]
 		},
+
+		"web#build": {
+			"dependsOn": ["@repo/nillion#build"] 
+		},
 		"test": {},
 		"lint": {},
 		"dev": {
