@@ -79,7 +79,8 @@ class SwarmPortfolioService {
 	}
 
 	listenToTransactions = (
-		listenAddresses?: AlchemyMinedTransactionsAddress[],
+		listenAddresses: Address[] = [],
+		filterAddresses: Address[] = [],
 	) => {
 		const emitter = new EventTarget();
 
@@ -92,9 +93,11 @@ class SwarmPortfolioService {
 				addresses: [
 					...(this.addresses.map((address) => ({
 						from: address.toString(),
-					})) as AlchemyMinedTransactionsAddress[]),
+					}))),
 					...(listenAddresses || []),
-				],
+				].filter(
+					address => filterAddresses.includes(address as Address)
+				) as AlchemyMinedTransactionsAddress[],
 				includeRemoved: true,
 				hashesOnly: false,
 			},

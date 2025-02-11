@@ -32,6 +32,7 @@ export const createPolicyPrompt = (
 ) => {
 	const base =
 		"Act accord to the policy below. Policy:" + "(Top takes precedence)";
+	+ "Evaulate the policy with your swarm portfolio above and decide whether you should supply or withdraw from aave protocol"
 	// TODO fix priority sort
 	const policies = policyRecords
 		.map((record) => {

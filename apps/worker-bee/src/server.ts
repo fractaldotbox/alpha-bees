@@ -2,11 +2,18 @@ import { promises as fs } from "fs";
 import path from "path";
 // Import the framework and instantiate it
 import Fastify from "fastify";
-import pino from "pino";
 import { initializeAgent, runAutonomousMode } from "./chatbot";
 
-const fileLogger = pino({}, pino.destination("worker.log"));
+import pino from "pino";
+import pretty from 'pino-pretty'
 
+const streams = [
+	{ stream: pretty() },
+	{ stream: pino.destination("worker.log") },
+];
+
+const fileLogger = pino({
+}, pino.multistream(streams));
 const PORT = process.env.PORT || "3000";
 
 const fastify = Fastify({
@@ -30,7 +37,7 @@ async function main() {
 	try {
 		const { agent, config, walletProvider } = await initializeAgent();
 		// always run autonomous mode
-		runAutonomousMode(agent, config, walletProvider);
+		runAutonomousMode(agent, config, walletProvider, fileLogger);
 
 		fileLogger.info("Starting Server with Agent...");
 		await fastify.listen({ port: Number(PORT) });
@@ -43,7 +50,6 @@ async function main() {
 // Run the server!
 
 if (require.main === module) {
-	console.log("Starting Server with Agent...");
 	main().catch((error) => {
 		console.error("Fatal error:", error);
 		process.exit(1);

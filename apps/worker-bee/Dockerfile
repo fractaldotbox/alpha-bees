@@ -19,4 +19,4 @@ RUN npm i
 
 EXPOSE 3000
 
-CMD [ "npm", "run", "start:server" ]
+CMD [ "npm", "run", "start" ]

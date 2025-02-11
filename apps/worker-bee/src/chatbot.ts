@@ -35,7 +35,8 @@ import SwarmPortfolioService from "./swarm-portfolio.service";
 import "reflect-metadata";
 import { z } from "zod";
 import { SupplySchema } from "./agentkit/action-providers/aave/schemas";
-import { Address } from "@coinbase/coinbase-sdk";
+import { Address } from "viem";
+import type { Logger } from "pino";
 const NILLION_POLICY_SCHEMA_ID = "9d03997d-2200-452d-87f9-92d4728ea93e";
 
 // @ts-ignore
@@ -151,15 +152,15 @@ export async function initializeAgent() {
 			AAVE_ACTION_ON && customAaveAction,
 			MORPHO_ACTION_ON && morphoActionProvider(),
 
-			// cdpApiActionProvider({
-			// 	apiKeyName: process.env.CDP_API_KEY_NAME,
-			// 	apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-			// }),
+			cdpApiActionProvider({
+				apiKeyName: process.env.CDP_API_KEY_NAME,
+				apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+			}),
 
-			// cdpWalletActionProvider({
-			// 	apiKeyName: process.env.CDP_API_KEY_NAME,
-			// 	apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-			// }),
+			cdpWalletActionProvider({
+				apiKeyName: process.env.CDP_API_KEY_NAME,
+				apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+			}),
 		].filter(Boolean) as ActionProvider[];
 
 		// Initialize AgentKit
@@ -183,12 +184,10 @@ export async function initializeAgent() {
 				`
         You are a helpful agent that can interact onchain using the Coinbase Developer Platform AgentKit. You are 
         empowered to interact onchain using your tools. Before executing your first action, get the wallet details to see what network 
-        you're on. If there is a 5XX (internal) HTTP error code, ask the user to try again later. If someone 
-        asks you to do something you can't do with your currently available tools, you must say so, and 
-        encourage them to implement it themselves using the CDP SDK + Agentkit, recommend they go to 
-        docs.cdp.coinbase.com for more information. Be concise and helpful with your responses. Refrain from 
-        restating your tools' descriptions unless it is explicitly requested.
-        ` + `Never use faucet and request_faucet_funds action.`,
+        you're on. If there is a 5XX (internal) HTTP error code, ask the user to try again later. Be concise and helpful with your responses. 
+        // ` + `Never use faucet and request_faucet_funds action.`
+				+ "Never ask for any other further requests or actions"
+				+ `Analyze the portoflio and explain your rationale for any action`
 		});
 
 		return { agent, config: agentConfig, walletProvider };
@@ -210,13 +209,14 @@ export async function runAutonomousMode(
 	agent: any,
 	config: any,
 	walletProvider: EvmWalletProvider,
+	logger: Logger
 ) {
-	console.log("Starting autonomous mode...");
+	logger.info("Starting autonomous mode...");
 
 	const nillionPolicies = await getAllRecords(NILLION_POLICY_SCHEMA_ID);
 
-	console.log("Retrieved Policy from the Queen:", nillionPolicies);
-	console.log("--------");
+	logger.info("Retrieved Policy from the Queen:", nillionPolicies);
+	logger.info("--------");
 
 	const swarmAddresses = [
 		...new Set([
@@ -229,11 +229,7 @@ export async function runAutonomousMode(
 			// base-sepolia Morpho USDC agent
 			"0x6B608C852850234d42e0C87db86C491A972E3E01",
 		]),
-	].filter(
-		(addr: string) => {
-			return addr !== walletProvider.getAddress()
-		}
-	) as `0x${string}`[];
+	] as `0x${string}`[];
 
 	// eslint-disable-next-line no-constant-condition
 	const swarmPortfolioService = new SwarmPortfolioService(
@@ -243,9 +239,9 @@ export async function runAutonomousMode(
 	);
 
 	// Create an observable from an event (replace 'actionEvent' with the actual event name)
-	const event$ = swarmPortfolioService.listenToTransactions();
+	const event$ = swarmPortfolioService.listenToTransactions([], [walletProvider.getAddress()] as Address[]);
 
-	const interval$ = interval(10 * 1000);
+	const interval$ = interval(60 * 1000);
 
 	// Build a cycle that waits for either an event or the interval, then re-runs indefinitely.
 	const cycle$ = of(null)
@@ -257,7 +253,7 @@ export async function runAutonomousMode(
 
 				console.log(portfolio);
 
-				// const thought = 'fund yourself with usdc faucet';
+				// const thought = 'fund yourself with usdc faucet 3 times, do not ask for confirmations';
 
 				const thought =
 					createPortfolioPrompt(config.networkId, portfolio) +
@@ -265,7 +261,7 @@ export async function runAutonomousMode(
 					"You can use the tools to gather data to make your decision" +
 					"Aave refers to the v3 lending protocol" +
 					"for erc20 token and actions like get_balance or supply, results is whole unit accounted for decimals. i.e. 4 means 0.000004USDC not 4USDC as USDC use 6 decimals" +
-					"Supply is not a simple transfer. use Aave action to supply USDC onto Aave protocol, in testnet such as sepolia or base-sepolia. Use correct arguments" +
+					"Supply is not a simple transfer. When you want to supply, Use Aave action to supply USDC onto Aave protocol, in testnet such as sepolia or base-sepolia. Use correct arguments" +
 					"Do not ask for confirmation for supply" +
 					"Do not use typical address on mainnet which will be different" +
 					"Do not deploy any ERC20, NFT" +
@@ -280,39 +276,14 @@ export async function runAutonomousMode(
 
 				for await (const chunk of stream) {
 					if ("agent" in chunk) {
-						console.log(chunk.agent.messages[0].content);
+						logger.info(chunk.agent.messages[0].content);
 					} else if ("tools" in chunk) {
-						console.log(chunk.tools.messages[0].content);
+						logger.info(chunk.tools.messages[0].content);
 					}
-					console.log("-------------------");
+					logger.info("-------------------");
 				}
 			} catch (err) {
 				console.error(err);
 			}
 		});
-}
-
-/**
- * Start the chatbot agent
- */
-async function main() {
-	try {
-		const { agent, config, walletProvider } = await initializeAgent();
-
-		// always run autonomous mode
-		await runAutonomousMode(agent, config, walletProvider);
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error("Error:", error.message);
-		}
-		process.exit(1);
-	}
-}
-
-if (require.main === module) {
-	console.log("Starting Agent...");
-	main().catch((error) => {
-		console.error("Fatal error:", error);
-		process.exit(1);
-	});
 }
