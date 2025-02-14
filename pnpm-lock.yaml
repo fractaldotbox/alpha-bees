@@ -74,6 +74,9 @@ importers:
       '@repo/nillion':
         specifier: workspace:*
         version: link:../../packages/nillion
+      '@tanstack/react-table':
+        specifier: ^8.21.2
+        version: 8.21.2(react-dom@19.0.0)(react@19.0.0)
       '@types/react':
         specifier: ^19.0.8
         version: 19.0.8
@@ -3784,6 +3787,23 @@ packages:
     dependencies:
       '@tanstack/query-core': 5.66.0
       react: 19.0.0
+    dev: false
+
+  /@tanstack/react-table@8.21.2(react-dom@19.0.0)(react@19.0.0):
+    resolution: {integrity: sha512-11tNlEDTdIhMJba2RBH+ecJ9l1zgS2kjmexDPAraulc8jeNA4xocSNeyzextT0XJyASil4XsCYlJmf5jEWAtYg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+    dependencies:
+      '@tanstack/table-core': 8.21.2
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+    dev: false
+
+  /@tanstack/table-core@8.21.2:
+    resolution: {integrity: sha512-uvXk/U4cBiFMxt+p9/G7yUWI/UbHYbyghLCjlpWZ3mLeIZiUBSKcUnw9UnKkdRz7Z/N4UBuFLWQdJCjUe7HjvA==}
+    engines: {node: '>=12'}
     dev: false
 
   /@tsconfig/node10@1.0.11:
